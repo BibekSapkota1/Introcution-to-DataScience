@@ -1,0 +1,85 @@
+---
+title: "Probability Calculation (Lab-8 / Part-2)"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Probability Calculation using R
+
+## dnorm
+
+```{r}
+dnorm(0, mean = 0, sd = 1)
+```
+
+```{r}
+x = c(0, 1, 2)
+dnorm(x, mean = 0, sd=1)
+```
+
+```{r}
+x = c(0,1,2)
+dnorm(x)
+```
+
+## pnorm
+
+```{r}
+pnorm(1, mean = 0, sd=1)
+```
+
+```{r}
+pnorm(1, mean = 0, sd=1, lower.tail = FALSE)
+```
+
+```{r}
+1-pnorm(1, mean = 0, sd=1)
+```
+
+## dbinom
+
+```{r}
+dbinom(10, size = 12, prob = 0.6)
+```
+
+## pbinom
+
+```{r}
+pbinom(4, size = 12, prob=0.6)
+```
+
+```{r}
+pbinom(4, size = 12, prob = 0.6, lower.tail = FALSE)
+```
+
+## dpois
+
+```{r}
+dpois(14, lambda = 10)
+```
+
+## ppois
+
+```{r}
+ppois(16, lambda = 10)
+```
+
+```{r}
+ppois(16, lambda = 10, lower.tail = FALSE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

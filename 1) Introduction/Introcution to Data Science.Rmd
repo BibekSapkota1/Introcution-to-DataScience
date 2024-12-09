@@ -1,0 +1,112 @@
+---
+title: "Introduction to Data Science Lab"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# A calculator
+
+task 1: Add
+```{r}
+2+5
+```
+
+task 2: Subtract
+```{r}
+10-6
+```
+
+task 3:Multiply
+```{r}
+100*5
+```
+
+task 4:Divide
+```{r}
+1000/5
+```
+
+task 5: Square
+```{r}
+2^3
+```
+
+task 6: Combine operations
+```{r}
+(2+3)*5
+2+3*5
+2+(3*5)
+```
+
+# Variables
+
+task 1: Assiging value to x and y then multiplying and assiging in to z and Displaying results.
+```{r}
+x = 2+5
+y = 6
+z = x*y
+z
+```
+
+task 2: Doing the same thing as task1 but using <- instead of =.
+```{r}
+a <- 10-7
+b <- 4
+c<-a/b
+c
+```
+
+# Functions
+
+```{r}
+x = c(100,200,300)
+x
+```
+
+#  Data Types in R
+
+task 1:Assigning 5 to x then finding it class and checking is it is.integer or not.
+```{r}
+x = 5
+class(x)
+is.integer(x)
+```
+
+task 2: changing class of x as integer and then checking as is.integer. 
+```{r}
+ x = as.integer(5)
+ class(x)
+ is.integer(x)
+```
+
+task 3: Assigning name to variable my.name and checking its class
+```{r}
+ my.name <-"Mohamed Gaber"
+ class(my.name)
+```
+
+task 4: Storing  Logical variables that store TRUE or FALSE and Displaying it and checking it class.
+```{r}
+x = 5
+ y = 7
+ z = x != y
+ z
+
+ class(z)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,586 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Linear Regression (Lab-11)},
+  pdfauthor={Bibek Sapkota},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Linear Regression (Lab-11)}
+\author{Bibek Sapkota}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{linear-regression}{%
+\section{Linear Regression}\label{linear-regression}}
+
+task 1:Loading the dataset
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dataset }\OtherTok{=} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"data{-}marketing{-}budget{-}12mo.csv"}\NormalTok{)}
+\NormalTok{dataset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Month Spend  Sales
+## 1      1  1000   9914
+## 2      2  4000  40487
+## 3      3  5000  54324
+## 4      4  4500  50044
+## 5      5  3000  34719
+## 6      6  4000  42551
+## 7      7  9000  94871
+## 8      8 11000 118914
+## 9      9 15000 158484
+## 10    10 12000 131348
+## 11    11  7000  78504
+## 12    12  3000  36284
+\end{verbatim}
+
+\hypertarget{use-ggplot-to-plot-a-scatter-plot-between-variables}{%
+\subsection{Use ggplot to plot a scatter plot between
+variables}\label{use-ggplot-to-plot-a-scatter-plot-between-variables}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Sales, }\AttributeTok{y =}\NormalTok{ Spend)) }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{alpha=} \FloatTok{0.3}\NormalTok{, }\AttributeTok{color=} \StringTok{"blue"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{LinearRegression_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\hypertarget{q1write-a-command-to-plot-sales-for-each-month}{%
+\subsection{Q1:Write a command to plot sales for each
+month?}\label{q1write-a-command-to-plot-sales-for-each-month}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ dataset, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Month, }\AttributeTok{y =}\NormalTok{ Sales)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{color =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{size =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{12}\NormalTok{, }\AttributeTok{labels =}\NormalTok{ month.name) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Monthly Sales Time Series"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Month"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Sales"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## i Please use `linewidth` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.
+\end{verbatim}
+
+\includegraphics{LinearRegression_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\hypertarget{simple-one-variable-and-multiple-linear-regression}{%
+\subsection{Simple (One Variable) and Multiple Linear
+Regression}\label{simple-one-variable-and-multiple-linear-regression}}
+
+Using lm()
+
+\hypertarget{one-variable}{%
+\subsubsection{One variable:}\label{one-variable}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{simple.fit }\OtherTok{=} \FunctionTok{lm}\NormalTok{(Sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{Spend, }\AttributeTok{data=}\NormalTok{dataset) }
+\FunctionTok{summary}\NormalTok{(simple.fit) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Sales ~ Spend, data = dataset)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+##  -3385  -2097    258   1726   3034 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 1383.4714  1255.2404   1.102    0.296    
+## Spend         10.6222     0.1625  65.378 1.71e-14 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2313 on 10 degrees of freedom
+## Multiple R-squared:  0.9977, Adjusted R-squared:  0.9974 
+## F-statistic:  4274 on 1 and 10 DF,  p-value: 1.707e-14
+\end{verbatim}
+
+\hypertarget{multiple-variables}{%
+\subsubsection{Multiple variables:}\label{multiple-variables}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{multi.fit }\OtherTok{=} \FunctionTok{lm}\NormalTok{(Sales}\SpecialCharTok{\textasciitilde{}}\NormalTok{Spend}\SpecialCharTok{+}\NormalTok{Month, }\AttributeTok{data=}\NormalTok{dataset) }
+\FunctionTok{summary}\NormalTok{(multi.fit) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Sales ~ Spend + Month, data = dataset)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1793.73 -1558.33    -1.73  1374.19  1911.58 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -567.6098  1041.8836  -0.545  0.59913    
+## Spend         10.3825     0.1328  78.159 4.65e-14 ***
+## Month        541.3736   158.1660   3.423  0.00759 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1607 on 9 degrees of freedom
+## Multiple R-squared:  0.999,  Adjusted R-squared:  0.9988 
+## F-statistic:  4433 on 2 and 9 DF,  p-value: 3.368e-14
+\end{verbatim}
+
+\hypertarget{interpreting-rs-regression-output}{%
+\subsection{Interpreting R's Regression
+Output}\label{interpreting-rs-regression-output}}
+
+task 1: Display each: \# capture model summary as an object
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modelSummary }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(simple.fit) }
+\end{Highlighting}
+\end{Shaded}
+
+task 2: model coefficients
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modelCoeffs }\OtherTok{\textless{}{-}}\NormalTok{ modelSummary}\SpecialCharTok{$}\NormalTok{coefficients }
+\end{Highlighting}
+\end{Shaded}
+
+task 3: get beta estimate for Spend - 10.6222
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beta.estimate }\OtherTok{\textless{}{-}}\NormalTok{ modelCoeffs[}\StringTok{"Spend"}\NormalTok{, }\StringTok{"Estimate"}\NormalTok{] }
+\end{Highlighting}
+\end{Shaded}
+
+task 4: get std.error for Spend - 0.1624745
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{std.error }\OtherTok{\textless{}{-}}\NormalTok{ modelCoeffs[}\StringTok{"Spend"}\NormalTok{, }\StringTok{"Std. Error"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+task 6: get t value for Spend - 65.37761
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{t\_value }\OtherTok{\textless{}{-}}\NormalTok{ modelCoeffs[}\StringTok{"Spend"}\NormalTok{, }\StringTok{"t value"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+task 7: get model F-statistic - 4274 1 10
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{f }\OtherTok{\textless{}{-}}\NormalTok{ modelSummary}\SpecialCharTok{$}\NormalTok{fstatistic }
+\NormalTok{f\_statistic }\OtherTok{\textless{}{-}}\NormalTok{ modelSummary}\SpecialCharTok{$}\NormalTok{fstatistic[}\DecValTok{1}\NormalTok{] }
+\end{Highlighting}
+\end{Shaded}
+
+task 8: get model p-value - 1.707e-14
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model\_p }\OtherTok{\textless{}{-}} \FunctionTok{pf}\NormalTok{(f[}\DecValTok{1}\NormalTok{], f[}\DecValTok{2}\NormalTok{], f[}\DecValTok{3}\NormalTok{], }\AttributeTok{lower=}\ConstantTok{FALSE}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+task 9:get model R-squared - 0.9976659
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{r\_2 }\OtherTok{\textless{}{-}}\NormalTok{ modelSummary}\SpecialCharTok{$}\NormalTok{r.squared }
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{q2-based-on-residual-which-model-is-better-why}{%
+\subsection{Q2: Based on residual, which model is better?
+Why?}\label{q2-based-on-residual-which-model-is-better-why}}
+
+Ans- Based on residual Multiple Regression Output is better beacuse it
+has less error.
+
+\hypertarget{q3-try-to-write-the-multiple-regression-equation-based-on-the-numbers-in-the-output-round-to-1-decimal-place.}{%
+\subsection{Q3: Try to write the multiple regression equation based on
+the numbers in the output (round to 1 decimal
+place).}\label{q3-try-to-write-the-multiple-regression-equation-based-on-the-numbers-in-the-output-round-to-1-decimal-place.}}
+
+Ans- Sales= 10.4 ⋅ Spend + 541.4 ⋅ Month − 567.6
+
+\hypertarget{r2-abd-residual}{%
+\subsection{R2 abd residual}\label{r2-abd-residual}}
+
+task 1:Loading data and creating linear regression and ploting the
+result
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(readxl)}
+
+\NormalTok{pressure }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"pressure.xlsx"}\NormalTok{) }\CommentTok{\#Upload the data }
+\NormalTok{lmTemp }\OtherTok{=} \FunctionTok{lm}\NormalTok{(Pressure}\SpecialCharTok{\textasciitilde{}}\NormalTok{Temperature, }\AttributeTok{data =}\NormalTok{ pressure) }\CommentTok{\#Create the linear regression  }
+\FunctionTok{plot}\NormalTok{(pressure, }\AttributeTok{pch =} \DecValTok{16}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{) }\CommentTok{\#Plot the results }
+\FunctionTok{abline}\NormalTok{(lmTemp) }\CommentTok{\#Add a regression line }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{LinearRegression_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+task 2: Summarizing the lmTemp
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(lmTemp) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Pressure ~ Temperature, data = pressure)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -41.85 -34.72 -10.90  24.69  63.51 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -81.5000    29.1395  -2.797   0.0233 *  
+## Temperature   4.0309     0.4696   8.583 2.62e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 42.66 on 8 degrees of freedom
+## Multiple R-squared:  0.902,  Adjusted R-squared:  0.8898 
+## F-statistic: 73.67 on 1 and 8 DF,  p-value: 2.622e-05
+\end{verbatim}
+
+task 3: ploting the residuals, use the command plot(lmTemp\$residuals).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(lmTemp}\SpecialCharTok{$}\NormalTok{residuals, }\AttributeTok{pch =} \DecValTok{16}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{LinearRegression_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+task 4: Printing the residuals in histogram
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(lmTemp}\SpecialCharTok{$}\NormalTok{resid, }\AttributeTok{main=}\StringTok{"Histogram of }
+\StringTok{Residuals"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"Residuals"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{LinearRegression_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+\hypertarget{use-linear-regression-to-predict}{%
+\subsection{Use linear regression to
+predict:}\label{use-linear-regression-to-predict}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Temperature =} \DecValTok{170}\NormalTok{) }
+\NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lmTemp,a) }
+\FunctionTok{print}\NormalTok{(result) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        1 
+## 603.7545
+\end{verbatim}
+
+\hypertarget{q4-use-the-linear-regression-to-predict-the-pressure-for-temperature-40.-write-your-result.}{%
+\subsection{Q4: Use the linear regression to predict the pressure for
+temperature 40. Write your
+result.}\label{q4-use-the-linear-regression-to-predict-the-pressure-for-temperature-40.-write-your-result.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Temperature =} \DecValTok{40}\NormalTok{) }
+\NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lmTemp,a) }
+\FunctionTok{print}\NormalTok{(result)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        1 
+## 79.73636
+\end{verbatim}
+
+Ans- The prediction of the pressure for temperature 40 is 79.73636
+
+\hypertarget{linear-regression-to-impute-missing-values}{%
+\subsection{Linear regression to impute missing
+values:}\label{linear-regression-to-impute-missing-values}}
+
+task 1: Giving the value of x,y,z and w
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{:}\DecValTok{10} 
+\NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{11}\NormalTok{,}\DecValTok{12}\NormalTok{,}\DecValTok{18}\NormalTok{,}\DecValTok{14}\NormalTok{,}\DecValTok{17}\NormalTok{, }\ConstantTok{NA}\NormalTok{,}\ConstantTok{NA}\NormalTok{,}\DecValTok{19}\NormalTok{,}\ConstantTok{NA}\NormalTok{,}\DecValTok{27}\NormalTok{) }
+\NormalTok{z }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{20}\NormalTok{, }\DecValTok{10}\NormalTok{) }
+\NormalTok{w }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DecValTok{3}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{9}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+task 2: Loading data into dataset
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(x,y,z,w) }
+\NormalTok{data }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     x  y  z  w
+## 1   1 11 16  1
+## 2   2 12  7  4
+## 3   3 18 15  7
+## 4   4 14  9 10
+## 5   5 17 11  3
+## 6   6 NA 18  5
+## 7   7 NA 19  7
+## 8   8 19 20  6
+## 9   9 NA 13  6
+## 10 10 27 17  9
+\end{verbatim}
+
+task 3: Summarizing the data
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(data) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        x               y               z               w        
+##  Min.   : 1.00   Min.   :11.00   Min.   : 7.00   Min.   : 1.00  
+##  1st Qu.: 3.25   1st Qu.:13.00   1st Qu.:11.50   1st Qu.: 4.25  
+##  Median : 5.50   Median :17.00   Median :15.50   Median : 6.00  
+##  Mean   : 5.50   Mean   :16.86   Mean   :14.50   Mean   : 5.80  
+##  3rd Qu.: 7.75   3rd Qu.:18.50   3rd Qu.:17.75   3rd Qu.: 7.00  
+##  Max.   :10.00   Max.   :27.00   Max.   :20.00   Max.   :10.00  
+##                  NA's   :3
+\end{verbatim}
+
+\hypertarget{creating-a-dummy-variable-that-will-indicate-missing-data}{%
+\subsection{Creating a dummy variable that will indicate missing
+data:}\label{creating-a-dummy-variable-that-will-indicate-missing-data}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{missDummy }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(t) }
+\NormalTok{\{ }
+\NormalTok{x }\OtherTok{\textless{}{-}} \FunctionTok{dim}\NormalTok{(}\FunctionTok{length}\NormalTok{(t)) }
+\NormalTok{x[}\FunctionTok{which}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(t))] }\OtherTok{=} \DecValTok{1} 
+\NormalTok{x[}\FunctionTok{which}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(t))] }\OtherTok{=} \DecValTok{0} 
+\FunctionTok{return}\NormalTok{(x) }
+\NormalTok{\} }
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{dummy }\OtherTok{\textless{}{-}} \FunctionTok{missDummy}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{y) }
+\NormalTok{data }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     x  y  z  w dummy
+## 1   1 11 16  1     1
+## 2   2 12  7  4     1
+## 3   3 18 15  7     1
+## 4   4 14  9 10     1
+## 5   5 17 11  3     1
+## 6   6 NA 18  5     0
+## 7   7 NA 19  7     0
+## 8   8 19 20  6     1
+## 9   9 NA 13  6     0
+## 10 10 27 17  9     1
+\end{verbatim}
+
+task 2: Next let us split data to 2sets (train and test):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{TrainData}\OtherTok{\textless{}{-}}\NormalTok{ data[data[}\StringTok{\textquotesingle{}dummy\textquotesingle{}}\NormalTok{]}\SpecialCharTok{==}\DecValTok{1}\NormalTok{,] }
+\NormalTok{TestData}\OtherTok{\textless{}{-}}\NormalTok{ data[data[}\StringTok{\textquotesingle{}dummy\textquotesingle{}}\NormalTok{]}\SpecialCharTok{==}\DecValTok{0}\NormalTok{,]}
+
+\NormalTok{TrainData}\OtherTok{\textless{}{-}}\NormalTok{ TrainData[,}\SpecialCharTok{{-}}\DecValTok{5}\NormalTok{] }
+\NormalTok{TestData}\OtherTok{\textless{}{-}}\NormalTok{ TestData[,}\SpecialCharTok{{-}}\DecValTok{5}\NormalTok{] }
+\end{Highlighting}
+\end{Shaded}
+
+task 3: Let's then fit a linear model with y as dependent variable and x
+as independent variable.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model}\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y}\SpecialCharTok{\textasciitilde{}}\NormalTok{x, TrainData) }
+\end{Highlighting}
+\end{Shaded}
+
+task 4: Predict missing values based on the model:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pred}\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(model, TestData)  }
+\NormalTok{pred }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        6        7        9 
+## 18.79730 20.30631 23.32432
+\end{verbatim}
+
+task 5:Insert it back in the original
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Where are NAs? }
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{y[}\FunctionTok{is.na}\NormalTok{(y)] }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] NA NA NA
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Replace with predicted }
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{y[}\FunctionTok{is.na}\NormalTok{(y)]}\OtherTok{\textless{}{-}}\NormalTok{ pred }
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}

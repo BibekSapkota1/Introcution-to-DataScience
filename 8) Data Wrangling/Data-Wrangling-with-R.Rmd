@@ -1,0 +1,1362 @@
+---
+title: "Data Wrangling with R"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Import Data - Basics
+
+task 1:Importing the library
+```{r}
+library(readr)
+```
+
+## Read Data
+
+task 1:Reading the hsb2.csv data.
+```{r}
+read_csv('hsb2.csv')
+```
+
+task 2:specifying the column types.
+```{r}
+spec_csv('hsb2.csv')
+```
+
+task 3:Reading the hsb3.csv data.
+```{r}
+read_csv('hsb3.csv')
+```
+
+task 4:treating the first row of the file as data rather than column names in the resulting dataframe.
+```{r}
+read_csv('hsb3.csv', col_names = FALSE)
+```
+
+task 5:specifying custom column names using the vector cnames for the resulting dataframe columns.
+```{r}
+cnames <- c("id", "gender", "race", "socio_economic_status", "school_type", "program", "read", "write", "math", "science", "socst")
+read_csv('hsb3.csv', col_names = cnames)
+```
+
+##  Skip Lines
+
+task 1:Reading the data without skipping any lines/rows and observe the result.
+```{r}
+read_csv('hsb4.csv')
+```
+
+task 2:Skiping the first 3 lines as they contain information about the data set which we do not need.
+```{r}
+read_csv('hsb4.csv', skip = 3)
+```
+
+## Maximum Lines
+
+task 1:Reading the first 120 rows from the hsb2 dataset.
+```{r}
+read_csv('hsb2.csv', n_max = 120)
+```
+
+## Column Types
+
+task 1:Specifying the data types for each column explicitly, where certain columns are defined as integers and others as factor variables with specified levels.
+```{r}
+read_csv('hsb2.csv', col_types = list(
+  col_integer(), col_factor(levels = c("0", "1")), 
+  col_factor(levels = c("1", "2", "3", "4")), col_factor(levels = c("1", "2", "3")), 
+  col_factor(levels = c("1", "2")), col_factor(levels = c("1", "2", "3")),
+  col_integer(), col_integer(), col_integer(), col_integer(),
+  col_integer())            
+)
+```
+
+task 2:Secifying column types only for selected columns (id as integer, prog as a factor with specified levels, and read as integer).
+```{r}
+read_csv('hsb2.csv', col_types = cols_only(id = col_integer(),
+  prog = col_factor(levels = c("1", "2", "3")), read = col_integer())
+)
+```
+
+# Import Data - Advanced
+
+task 1:Reading the library
+```{r}
+library(readxl)
+library(haven)
+```
+
+
+##  List Sheets
+
+task 1:Seeing how many sheets are present in sample.xls file and their respective names using excel_sheets().
+```{r}
+excel_sheets('sample.xls')
+```
+##  Read Sheet
+
+task 1:Reading data from the ecom sheet of the sample.xls file using read_excel(), specifying the sheet number.
+```{r}
+read_excel('sample.xls', sheet = 1)
+```
+
+task 2:Specifying the sheet name.
+```{r}
+read_excel('sample.xls', sheet = 'ecom')
+```
+
+## Read Specific Cells
+
+task 1:Reading data from first 4 rows of columns B and C, we will specify the range as "B1:C4"
+```{r}
+read_excel('sample.xls', sheet = 1, range = "B1:C4")
+```
+
+task 2:Reading data from first 5 rows of columns A, B and C, we will specify the range as "A1:C5"
+```{r}
+read_excel('sample.xls', sheet = 1, range = "A1:C5")
+```
+
+task 3:Reading the data from first 3 rows and 2 columns starting from A4.
+```{r}
+read_excel('sample.xls', sheet = 1, col_names = FALSE,
+  range = anchored("A4", dim = c(3, 2)))
+```
+
+task 4:Reading data from the first 6 rows and 4 columns.
+```{r}
+read_excel('sample.xls', sheet = 1,
+  range = cell_limits(c(1, 1), c(6, 4)))
+```
+
+task 5:Reading data from all the rows from the second column onwards.
+```{r}
+read_excel('sample.xls', sheet = 1,
+  range = cell_limits(c(1, 2), c(NA, NA)))
+```
+
+task 6:Reading data from the first 4 rows of columns B and C.(Method 1)
+```{r}
+read_excel('sample.xls', sheet = 1,
+  range = "B1:C4")
+```
+
+task 7:Reading data from the first 4 rows of columns B and C.(Method 2)
+```{r}
+read_excel('sample.xls', sheet = 1,
+  range = anchored("B1", dim = c(4, 2)))
+```
+
+task 8:Reading data from the first 4 rows of columns B and C.(Method 3)
+```{r}
+read_excel('sample.xls', sheet = 1,
+  range = cell_limits(c(1, 2), c(4, 3)))
+```
+
+## Read Specific Rows
+
+task 1:Reading the first 4 rows of data from the sample.xls file.
+```{r}
+read_excel('sample.xls', sheet = 1, range = cell_rows(1:4))
+```
+
+## Read Single Column
+
+task 1:Reading the second column from the sample.xls file using cell_cols().
+```{r}
+read_excel('sample.xls', sheet = 1, range = cell_cols(2))
+```
+
+## Read Multiple Columns
+
+task 1:Reading the 2nd, 4th and 6th column from the sample.xls file.
+```{r}
+read_excel('sample.xls', sheet = 1, range = cell_cols(c(2, 4, 6)))
+```
+
+
+task 2:Reading data from the 2nd column upto and including the 6th column.
+```{r}
+read_excel('sample.xls', sheet = 1, range = cell_cols(c(2:6)))
+```
+
+## Statistical Softwares
+
+task 1:Reading data using read_stata.
+```{r}
+read_stata('airline.dta')  
+```
+
+task 2:Reading data using read_spss.
+```{r}
+read_spss('employee.sav') 
+```
+
+task 3:Reading data using read_sas.
+```{r}
+read_sas('airline.sas7bdat')
+```
+
+# dplyr Basics
+
+task 1:Importing library
+```{r}
+library(dplyr)
+library(readr)
+```
+
+
+task 2: Reading the data.
+```{r}
+ecom <- 
+  read_csv('https://raw.githubusercontent.com/rsquaredacademy/datasets/master/web.csv',
+    col_types = cols_only(device = col_factor(levels = c("laptop", "tablet", "mobile")),
+      referrer = col_factor(levels = c("bing", "direct", "social", "yahoo", "google")),
+      purchase = col_logical(), n_pages = col_double(), n_visit = col_double(), 
+      duration = col_double(), order_value = col_double(), order_items = col_double()
+    )
+  )
+
+ecom
+```
+
+##  Average Order Value by Devices
+
+task 1:Calculating the average Order Value by devices.
+```{r}
+ecom %>%
+  filter(purchase) %>%
+  select(device, order_value) %>%
+  group_by(device) %>%
+  summarise_all(funs(revenue = sum, orders = n())) %>%
+  mutate(
+    aov = revenue / orders
+  ) %>%
+  select(device, aov) %>%
+  arrange(aov)
+```
+
+##  Filter Rows
+
+task 1:Filtering the device mobile and Displaying it.
+```{r}
+filter(ecom, device == "mobile")
+```
+
+task 2:Filtering the device mobile and Displaying the purchased one only.
+```{r}
+filter(ecom, device == "mobile", purchase)
+```
+
+task 3:Filtering the device tablet and  N-page which is less than 15.
+```{r}
+filter(ecom, device == "tablet", purchase, n_pages < 15)
+```
+
+task 4:Filtering purchased only.
+```{r}
+filter(ecom, purchase)
+```
+
+##  Select Columns
+
+task 1:Selecting device and duration columns only.
+```{r}
+select(ecom, device, duration)
+```
+
+task 2:Selecting the columns from referrer to order_items.
+```{r}
+select(ecom, referrer:order_items)
+```
+
+task 3:Removing the n_page and duration columns.
+```{r}
+select(ecom, -n_pages, -duration)
+```
+
+task 4:Selecting device and order_value.
+```{r}
+select(ecom, device, order_value)
+```
+
+task 5:Filtering the putchased and then displaying its device and order_value.
+```{r}
+ecom1 <- filter(ecom, purchase)
+
+ecom2 <- select(ecom1, device, order_value)
+
+ecom2
+```
+
+##  Grouping Data
+
+task 1:spliting the referrer columns.
+```{r}
+group_by(ecom, referrer)
+```
+
+task 2:split ecom2 by device type.
+```{r}
+ecom3 <- group_by(ecom2, device)
+ecom3
+```
+
+## Summarise Data
+
+task 1:Split data by referrer type.
+```{r}
+step_1 <- group_by(ecom, referrer)
+```
+
+task 2:Compute average number of pages.
+```{r}
+step_2 <- summarise(step_1, mean(n_pages))
+step_2
+```
+
+task 3:Computing average number of pages.
+```{r}
+step_2 <- summarise(step_1, mean(n_pages), median(n_pages))
+step_2
+```
+
+task 4:Selecting relevant columns.
+```{r}
+step_1 <- select(ecom, referrer, order_value)
+```
+
+task 5:spliting data by referrer type.
+```{r}
+step_2 <- group_by(step_1, referrer)
+```
+
+task 6:computing average number of pages.
+```{r}
+step_3 <- summarise_all(step_2, funs(mean))
+step_3
+```
+
+task 7:Selecting relevant columns.
+```{r}
+step_1 <- select(ecom, referrer, order_value)
+```
+
+task 8:Spliting data by referrer type.
+```{r}
+step_2 <- group_by(step_1, referrer)
+```
+
+task 9:Computing mean and median number of pages.
+```{r}
+step_3 <- summarise_all(step_2, funs(mean, median))
+step_3
+```
+
+task 10:Summarizing the revenue and orders.
+```{r}
+ecom4 <- summarise(ecom3, revenue = sum(order_value),
+          orders = n())
+ecom4
+```
+
+task 11:Summarizing the revenue and orders using funs.
+```{r}
+ecom4 <- summarise_all(ecom3, funs(revenue = sum, orders = n()))
+ecom4
+```
+
+## Create Columns
+
+task 1:Selecting duration and n_pages from ecom.
+```{r}
+mutate_1 <- select(ecom, n_pages, duration)
+mutate(mutate_1, avg_page_time = duration / n_pages)
+```
+task 2:creating another column sqrt_avg_page_time i.e. square root of the average time on page using avg_page_time.
+```{r}
+mutate(mutate_1,
+       avg_page_time = duration / n_pages,
+       sqrt_avg_page_time = sqrt(avg_page_time))
+```
+
+task 3:Creating new columns using mutate.
+```{r}
+ecom5 <- mutate(ecom4, aov = revenue / orders)
+ecom5
+```
+
+task 3:Selecting device and aov columns.
+```{r}
+ecom6 <- select(ecom5, device, aov)
+ecom6
+```
+
+##  Arrange Data
+
+task 1:Arranging data by n_page columns.
+```{r}
+arrange(ecom, n_pages)
+```
+
+task 2:Arranging  n_page columns in descending order.
+```{r}
+arrange(ecom , desc(n_pages))
+```
+
+task 3:Arranging data first by number of visits and then by number of pages in a descending order.
+```{r}
+arrange(ecom, n_visit, desc(n_pages))
+```
+
+task 4:Arranging aov column in descending order.
+```{r}
+arrange(ecom6, aov)
+```
+
+##  AOV by Devices
+
+task 1:combine all the code from the above steps.
+```{r}
+ecom1 <- filter(ecom, purchase)
+ecom2 <- select(ecom1, device, order_value)
+ecom3 <- group_by(ecom2, device)
+ecom4 <- summarise_all(ecom3, funs(revenue = sum, orders = n()))
+ecom5 <- mutate(ecom4, aov = revenue / orders)
+ecom6 <- select(ecom5, device, aov)
+ecom7 <- arrange(ecom6, aov)
+ecom7
+```
+
+task 2: without creating the intermediate data (ecom1 - ecom6)? .using the %>% operator to chain the steps and get rid of the intermediate data.
+```{r}
+ecom %>%
+  filter(purchase) %>%
+  select(device, order_value) %>%
+  group_by(device) %>%
+  summarise_all(funs(revenue = sum, orders = n())) %>%
+  mutate(
+    aov = revenue / orders
+  ) %>%
+  select(device, aov) %>%
+  arrange(aov)
+```
+
+# Joining Tables using dplyr
+
+task 1:Loading the packages.
+```{r}
+library(dplyr)
+library(readr)
+options(tibble.width = Inf)
+```
+
+task 2:Reading the data of order.
+```{r}
+order <- read_delim('https://raw.githubusercontent.com/rsquaredacademy/datasets/master/order.csv', delim = ';')
+order
+```
+
+task 3::Reading the data of customer.
+```{r}
+customer <- read_delim('https://raw.githubusercontent.com/rsquaredacademy/datasets/master/customer.csv', delim = ';')
+customer
+```
+
+task 4:Joining data by id using inner join.
+```{r}
+inner_join(customer, order, by = "id")
+```
+
+task 5:To get data for all those customers and their orders irrespective of whether a customer has placed orders or not let us join the order data with the customer data using left_join.
+```{r}
+left_join(customer, order, by = "id")
+```
+
+task 6:To get customer data for all orders, let us join the order data with the customer data using right_join.
+```{r}
+right_join(customer, order, by = "id")
+```
+
+task 7:To get customer data for all orders where customer data exists, let us join the order data with the customer data using semi_join
+```{r}
+semi_join(customer, order, by = "id")
+```
+
+task 8:To get details of customers who have not placed orders, let us join the order data with the customer data using anti_join.
+```{r}
+anti_join(customer, order, by = "id")
+```
+
+task 9:To get details of all customers and all orders, let us join the order data with the customer data using full_join.
+```{r}
+full_join(customer, order, by = "id")
+```
+
+# dplyr Helpers
+
+task 1:Loading the data.
+```{r}
+ecom <- 
+  read_csv('https://raw.githubusercontent.com/rsquaredacademy/datasets/master/web.csv',
+    col_types = cols_only(device = col_factor(levels = c("laptop", "tablet", "mobile")),
+      referrer = col_factor(levels = c("bing", "direct", "social", "yahoo", "google")),
+      purchase = col_logical(), bouncers = col_logical(), duration = col_double(),
+      n_visit = col_double(), n_pages = col_double()
+    )
+  )
+
+ecom
+```
+
+##  Data Sanitization
+
+task 2:Using distinct to examine the values in the referrer column.
+```{r}
+distinct(ecom, referrer)
+```
+
+task 3:Using distinct to examine the values in the device column.
+```{r}
+distinct(ecom, device)
+```
+
+## Rename Columns
+
+task 1:Renaming duration columns to time_on_site.
+```{r}
+rename(ecom, time_on_site = duration)
+```
+
+## Data Tabulation
+
+task 1:Coung how many time a value is repeated in referrer.
+```{r}
+ecom %>%
+  group_by(referrer) %>%
+  tally()
+```
+
+task 2:Knowing the number of bouncers driven by the different sources of traffic.
+```{r}
+ecom %>%
+  group_by(referrer, bouncers) %>%
+  tally()
+```
+
+task 3:looking how many conversions happen across different devices.
+```{r}
+ecom %>%
+  group_by(device, purchase) %>%
+  tally() %>%
+  filter(purchase)
+```
+
+task 4:Extracting the above information is by using count.
+```{r}
+ecom %>%
+  count(referrer, purchase) %>%
+  filter(purchase)
+```
+
+## Sampling Data
+
+task 1:sampling a specific number of observations.
+```{r}
+sample_n(ecom, 700)
+```
+
+task 2:groups the 'ecom' dataframe by the 'referrer' column and then randomly samples 100 rows from each group.
+```{r}
+ecom %>%
+  group_by(referrer) %>%
+  sample_n(100)
+```
+
+task 3:sample_frac() allows a specific percentage of observations.
+```{r}
+sample_frac(ecom, size = 0.7)
+```
+
+##  Sample Data
+
+task 1:Extracting the t column from ecom using column name.
+```{r}
+ecom_mini <- sample_n(ecom, size = 10)
+pull(ecom_mini, device)
+```
+
+task 2:Extracting the first column from ecom using column position instead of name.
+```{r}
+pull(ecom_mini, 1) 
+```
+
+task 3:Extracting data from the last column.
+```{r}
+pull(ecom_mini, -1) 
+```
+
+task 4:Extracting data starting from the 5th row and upto the 15th row.
+```{r}
+slice(ecom, 5:15)
+```
+
+task 5:Useing n() inside slice() to extract the last row.
+```{r}
+slice(ecom, n())
+```
+
+##  Case Between
+
+task 1:Checking how many visits browsed pages between 5 and 15.
+```{r}
+ecom_sample <- sample_n(ecom, 30)
+  
+ecom_sample %>%
+  pull(n_pages) %>%
+  between(5, 15) 
+```
+
+##  Case When
+
+task 1:creating a new column repeat_visit from n_visit (the number of previous visits).
+```{r}
+ecom %>%
+  mutate(
+    repeat_visit = case_when(
+      n_visit > 0 ~ TRUE,
+      TRUE ~ FALSE
+    )
+  ) %>%
+  select(n_visit, repeat_visit) 
+```
+
+
+#  Pipe Operator
+
+task 1:Using the following R packages.
+```{r}
+library(magrittr)
+library(readr)
+library(dplyr)
+library(stringr)
+library(purrr)
+```
+
+task 2: Loading the data .
+```{r}
+ecom <- 
+  read_csv('https://raw.githubusercontent.com/rsquaredacademy/datasets/master/web.csv',
+    col_types = cols_only(
+      referrer = col_factor(levels = c("bing", "direct", "social", "yahoo", "google")),
+      n_pages = col_double(), duration = col_double(), purchase = col_logical()
+    )
+  )
+
+ecom
+```
+
+task 3:Taking only 1st 10 rows.
+```{r}
+ecom_mini <- sample_n(ecom, size = 10)
+ecom_mini
+```
+
+task 4:Loading 1st 10 data.
+```{r}
+head(ecom, 10)
+```
+
+task 5:Loading 1st 10 rows of data using %>%.
+```{r}
+ecom %>% head(10)
+```
+
+## Square Root
+
+task 1: square root of n_pages column from the data set.
+```{r}
+y <- sqrt(ecom_mini$n_pages)
+```
+
+task 2:select n_pages variable and assign it to y and compute square root of y and assign it to y. 
+```{r}
+y <-
+    ecom_mini %$%
+    n_pages
+
+y %<>% sqrt
+```
+
+
+task 3:Another way to compute the square root of y.
+```{r}
+y <-
+  ecom_mini %$% 
+  n_pages %>% 
+  sqrt()
+```
+
+## Visualization
+
+task 1:creating bar plot  of referrer.
+```{r}
+barplot(table(subset(ecom, purchase)$referrer))
+```
+
+task 2:creating bar plot using  pipe operator.
+```{r}
+ecom %>%
+  subset(purchase) %>%
+  extract('referrer') %>%
+  table() %>%
+  barplot()
+```
+
+## Correlation
+
+task 1:Calculating correlation.
+```{r}
+ecom1 <- subset(ecom, purchase)
+cor(ecom1$n_pages, ecom1$duration)
+```
+
+task 2:Calculating correlation with pipe.
+```{r}
+ecom %>%
+  subset(purchase) %$% 
+  cor(n_pages, duration)
+```
+
+## Regression
+
+task 1:Calculating Regression.
+```{r}
+summary(lm(duration ~ n_pages, data = ecom))
+```
+
+task 2:Calculating Regression using pipe operator.
+```{r}
+ecom %$%
+  lm(duration ~ n_pages) %>%
+  summary()
+```
+
+## String Manipulation
+
+task 1:Extracting the first name (jovial) from the below email id and convert it to upper case.
+```{r}
+email <- 'jovialcann@anymail.com'
+
+# without pipe
+str_to_upper(str_sub(str_split(email, '@')[[1]][1], start = 1, end = 6))
+```
+```{r}
+# with pipe
+email %>%
+  str_split(pattern = '@') %>%
+  extract2(1) %>%
+  extract(1) %>%
+  str_sub(start = 1, end = 6) %>%
+  str_to_upper()
+```
+
+task 2:Using another method that uses map_chr() from the purrr package.
+```{r}
+email %>%
+  str_split(pattern = '@') %>%
+  map_chr(1) %>%
+  str_sub(start = 1, end = 6) %>%
+  str_to_upper()
+```
+
+## Data Extraction
+
+task 1:Displaying n_pages.
+```{r}
+ecom_mini['n_pages']
+```
+
+task 2:Extracting columns using their name.
+```{r}
+extract(ecom_mini, 'n_pages') 
+```
+
+task 3:Displaying using their index position.
+```{r}
+ecom_mini[2]
+```
+
+task 4:Extracting columns using their index position.
+```{r}
+extract(ecom_mini, 2) 
+```
+
+task 5:$ will also return a atomic vector.
+```{r}
+ecom_mini$n_pages
+```
+
+task 6:Using use_series() in place of $.
+```{r}
+use_series(ecom_mini, 'n_pages') 
+```
+
+task 7:converting  ecom_mini into a list using as.list() .
+```{r}
+ecom_list <- as.list(ecom_mini)
+```
+
+task 8:Extracting elements of a list using [[ ]].
+```{r}
+ecom_list[['n_pages']]
+```
+
+task 9:Extracting elements of a list using extract2().
+```{r}
+extract2(ecom_list, 'n_pages')
+```
+
+task 10:Extracting elements using index position.
+```{r}
+ecom_list[[1]]
+```
+```{r}
+extract2(ecom_list, 1)
+```
+
+task 11:Extracting the elements of a list using use_series() .
+```{r}
+ecom_list$n_pages
+```
+```{r}
+use_series(ecom_list, n_pages)
+```
+
+## Arithmetic Operations
+
+task 1:Adding the data using different methods.
+```{r}
+1:10 + 1
+add(1:10, 1)
+`+`(1:10, 1)
+```
+
+task 2:Multiplying the data using different methods.
+```{r}
+1:10 * 3
+multiply_by(1:10, 3)
+`*`(1:10, 3)
+```
+
+task 3:Dividing the data using different methods.
+```{r}
+1:10 / 2
+divide_by(1:10, 2)
+`/`(1:10, 2)
+```
+
+task 4:power the data using different methods.
+```{r}
+1:10 ^ 2
+raise_to_power(1:10, 2)
+`^`(1:10, 2)
+```
+
+##  Logical Operators
+
+task 1:Using greater than in different methods.
+```{r}
+1:10 > 5
+is_greater_than(1:10, 5)
+`>`(1:10, 5)
+```
+
+task 3:Using weakly greater than in different methods.
+```{r}
+1:10 >= 5
+is_weakly_greater_than(1:10, 5)
+`>=`(1:10, 5)
+```
+
+# tibbles
+
+task 1:Loading the library.
+```{r}
+library(tibble)
+library(dplyr)
+```
+
+
+task 2:Creating tibbles
+```{r}
+tibble(x = letters,
+       y = 1:26,
+       z = sample(100, 26))
+```
+
+## tibble features
+
+task 1:never changes input’s types.
+```{r}
+tibble(x = letters,
+       y = 1:26,
+       z = sample(100, 26))
+```
+
+task 2:never adjusts variable names.
+```{r}
+names(data.frame(`order value` = 10))
+```
+```{r}
+names(tibble(`order value` = 10))
+```
+
+task 3:never prints all rows.
+```{r}
+x <- 1:100
+y <- letters[1]
+z <- sample(c(TRUE, FALSE), 100, replace = TRUE)
+tibble(x, y, z)
+```
+
+task 4:Never recycles vector of length greater than 1
+```{r}
+x <- 1:100
+y <- rep(letters, length.out = 100)
+z <- sample(c(TRUE, FALSE), 100, replace = TRUE)
+tibble(x, y, z)
+```
+
+task 5:Testing if an object is a tibble using is_tibble().
+```{r}
+is_tibble(mtcars)
+```
+```{r}
+is_tibble(as_tibble(mtcars))
+```
+
+task 7:Creating tibbles is using tribble()
+```{r}
+tribble(
+  ~x, ~y, ~z,
+  #--|--|----
+  1, TRUE, 'a',
+  2, FALSE, 'b'
+)
+```
+
+task 8:Names of the columns in tibbles
+```{r}
+tibble(
+  ` ` = 'space',
+  `2` = 'integer',
+  `:)` = 'smiley'
+)
+```
+
+task 9:Adding data related to Safari browser to the web traffic data using add_row().
+```{r}
+browsers <- enframe(c(chrome = 40, firefox = 20, edge = 30))
+browsers
+```
+
+```{r}
+add_row(browsers, name = 'safari', value = 10)
+```
+
+
+task 10:Changing the safari from last to the second.
+```{r}
+add_row(browsers, name = 'safari', value = 10, .before = 2)
+```
+
+task 11:Adding the new columns using add_columns()
+```{r}
+browsers <- enframe(c(chrome = 40, firefox = 20, edge = 30, safari = 10))
+add_column(browsers, visits = c(4000, 2000, 3000, 1000))
+```
+
+task 12:Checking whether a data set has rownames, using has_rownames().
+```{r}
+has_rownames(mtcars)
+```
+
+task 13:Removing Rownames.
+```{r}
+remove_rownames(mtcars)
+``` 
+
+task 14:Rownames to Column.
+```{r}
+head(rownames_to_column(mtcars))
+```
+
+task 15:Converting the first column in the data set to rownames, use column_to_rownames():
+```{r}
+mtcars_tbl <- rownames_to_column(mtcars)
+column_to_rownames(mtcars_tbl)
+```
+
+task 16:Using glimpse() to get an overview of the data.
+```{r}
+glimpse(mtcars)
+```
+
+task 17:Checking if a tibble has a specific column using has_name().
+```{r}
+has_name(mtcars, 'cyl')
+```
+```{r}
+has_name(mtcars, 'gears')
+```
+
+# Hacking Strings
+
+task 1:Loading the library.
+```{r}
+library(stringr)
+library(tibble)
+library(magrittr)
+library(purrr)
+library(dplyr)
+library(readr)
+```
+
+
+task 2:Importing the data.
+```{r}
+mockstring <- read_csv('https://raw.githubusercontent.com/rsquaredacademy/datasets/master/mock_strings.csv')
+mockstring
+```
+
+task 3:use a smaller data (i.e. 1st 10 rows)
+```{r}
+mockdata <- slice(mockstring, 1:10)
+mockdata
+```
+
+task 4:Using str_detect() to detect @ .
+```{r}
+str_detect(mockdata$email, pattern = "@")
+```
+
+task 5:Using str_count() to count the number of times @ appears in the email ids.
+```{r}
+str_count(mockdata$email, pattern = "@")
+```
+
+task 6:Using str_c() to concatenate strings, adding the string email id: before each email id in the data set.
+```{r}
+str_c("email id:", mockdata$email)
+```
+
+task 7:spliting domain name and extension from the domain column.
+```{r}
+str_split(mockdata$domain, pattern = "\\.")
+```
+
+task 8:It truncates each email address in the 'email' column of the 'mockdata' dataframe to a maximum width of 10 characters.
+```{r}
+str_trunc(mockdata$email, width = 10)
+```
+```{r}
+str_trunc(mockdata$email, width = 10, side = "left")
+```
+```{r}
+str_trunc(mockdata$email, width = 10, side = "center")
+```
+
+task 9:quickly sort the emails in both ascending and descending orders.
+```{r}
+str_sort(mockdata$email)
+```
+```{r}
+str_sort(mockdata$email, decreasing = TRUE)
+```
+
+task 10:Making full_name in uppercase.
+```{r}
+str_to_upper(mockdata$full_name)
+```
+
+task 11:Making full_name in lowercase.
+```{r}
+str_to_lower(mockdata$full_name)
+```
+
+task 12:Replacing word street with ST.
+```{r}
+str_replace(mockdata$address, "Street", "ST")
+```
+
+task 13:Replacing word Road with RD.
+```{r}
+str_replace(mockdata$address, "Road", "RD")
+```
+
+task 14:Extracting parts of the string that match a particular pattern(org) using str_extract().
+```{r}
+str_extract(mockdata$email, pattern = "org")
+```
+
+task 15:Using str_match() to see if the pattern is present in the string.
+```{r}
+str_match(mockdata$email, pattern = "org")
+```
+
+task 16:Using str_which() to identify the index of the strings that match our pattern.
+```{r}
+str_which(mockdata$email, pattern = "org")
+```
+
+task 17: knowing the position of @ in the email ids,using str_locate().
+```{r}
+str_locate(mockdata$email, pattern = "@")
+```
+
+task 18:Using str_length to ensure that the length of the strings in the password column.
+```{r}
+str_length(mockdata$passwords)
+```
+
+task 19:Extracting the currency type from the currency column.
+```{r}
+str_sub(mockdata$currency, start = 1, end = 1)
+```
+
+task 20:using it to extract the first name from the full_name column.
+```{r}
+word(mockdata$full_name, 1)
+```
+
+task 21:using it to extract the last name from the full_name column.
+```{r}
+word(mockdata$full_name, 2)
+```
+
+## Extract domain name from email ids
+
+task 1:Displaying  emails before we extract the domain names.
+```{r}
+emails <- 
+  mockstring %>%
+  pull(email) %>%
+  head()
+
+emails
+```
+
+task 2:Spliting the email using  using the pattern @.
+```{r}
+ str_split(emails, pattern = '@')
+```
+
+task 3:Extract the second element from the list.
+```{r}
+emails %>%
+  str_split(pattern = '@') %>%
+  map_chr(2)
+```
+
+task 4:Spliting the above using pattern \\..
+```{r}
+emails %>%
+  str_split(pattern = '@') %>%
+  map_chr(2) %>%
+  str_split(pattern = '\\.') 
+```
+
+task 5:Extracting the first element from the  list.
+```{r}
+emails %>%
+  str_split(pattern = '@') %>%
+  map_chr(2) %>%
+  str_split(pattern = '\\.') %>%
+  map_chr(extract(1))
+```
+
+task 6:Extracting Domain Extension.
+```{r}
+emails %>%
+  str_split(pattern = '@') %>%
+  map_chr(2) %>%
+  str_split(pattern = '\\.', simplify = TRUE) %>%
+  extract(, 2)
+```
+
+##  Extract image type from URL
+
+task 1: Displaying the URL of the image.
+```{r}
+img <- 
+  mockstring %>%
+  pull(imageurl) %>%
+  head()
+
+img
+```
+
+task 2:Spliting imageurl using pattern \\.
+```{r}
+str_split(img, pattern = '\\.')
+```
+
+task 3:Extracting the third value from each element of the resulting list.
+```{r}
+img %>%
+  str_split(pattern = '\\.') %>%
+  map_chr(extract(3))
+```
+
+task 4:subset the first 3 characters of the string using the index position.
+```{r}
+img %>%
+  str_split(pattern = '\\.') %>%
+  map_chr(extract(3)) %>%
+  str_sub(start = 1, end = 3)
+```
+
+task 5:spliting the string using pattern / and extract the first value from the elements of the resulting list
+```{r}
+img %>%
+  str_split(pattern = '\\.') %>%
+  map_chr(extract(3)) %>%
+  str_split(pattern = '/') %>%
+  map_chr(extract(1))
+```
+
+##  Extract Image Dimesion from URL
+
+task 1:Locating numbers between 0 and 9 using str_locate.
+```{r}
+str_locate(img, pattern = "[0-9]") 
+```
+
+task 2:Extracting the part of the url that contains the image dimension using str_sub().
+```{r}
+str_sub(img, start = 23) 
+```
+
+task 3: Spliting the string using the pattern \\..
+```{r}
+img %>%
+  str_sub(start = 23) %>%
+  str_split(pattern = '\\.') 
+```
+
+task 4:Extracting the first element.
+```{r}
+img %>%
+  str_sub(start = 23) %>%
+  str_split(pattern = '\\.') %>%
+  map_chr(extract(1))
+```
+
+##  Extract HTTP Protocol from URL
+
+task 1:Displaying url
+```{r}
+url1 <- 
+  mockstring %>%
+  pull(url) %>%
+  first()
+
+url1
+```
+
+task 2: Spliting the url using the pattern ://.
+```{r}
+str_split(url1, pattern = '://') 
+```
+
+task 3:Extracting the first element.
+```{r}
+url1 %>%
+  str_split(pattern = '://') %>%
+  map_chr(extract(1))
+```
+
+## Extract file type
+
+task 1:Displaying the urls
+```{r}
+urls <-
+  mockstring %>%
+  use_series(url) %>%
+  extract(1:3)
+
+urls
+```
+
+task 2:Checking if there are only 2 dots in the URL
+```{r}
+urls %>%
+  str_locate_all(pattern = '\\.') %>%
+  map_int(nrow) %>%
+  is_greater_than(2) %>%
+  sum()
+```
+
+task 3:Checking if there is only 1 question mark in the URL
+```{r}
+urls %>%
+  str_locate_all(pattern = "[?]") %>%
+  map_int(nrow) %>%
+  is_greater_than(1) %>%
+  sum()
+```
+
+task 4: Detecting the staritng position of file type.
+```{r}
+d <- 
+  urls %>%
+  str_locate_all(pattern = '\\.') %>%
+  map_int(extract(2)) %>%
+  add(1)
+
+d  
+```
+
+task 5:Detecting the ending position of file type.
+```{r}
+q <-  
+  urls %>%
+  str_locate_all(pattern = "[?]") %>%
+  map_int(extract(1)) %>%
+  subtract(1)
+
+q
+```
+
+task 6:Specifying the index position for extracting file type
+```{r}
+str_sub(urls, start = d, end = q)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

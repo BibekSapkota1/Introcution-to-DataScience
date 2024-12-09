@@ -1,0 +1,46 @@
+---
+title: "T-test"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+task 1: Load built-in sleep data set
+```{r}
+sleep
+```
+
+task 2:Making a wide version of the sleep data; below we’ll see how to work with data in both long and wide formats
+```{r}
+sleep_wide <- data.frame(
+    ID=1:10,
+    group1=sleep$extra[1:10],
+    group2=sleep$extra[11:20]
+)
+sleep_wide
+```
+
+## Compare two samples using T-test
+
+task 1:Welch t-test
+```{r}
+t.test(extra ~ group, sleep)
+```
+
+task 2: Student t-test
+```{r}
+t.test(extra ~ group, sleep, var.equal=TRUE)
+```
+
+### Q1:What is the p-value of the t-test? 
+0.s- The p value of t-test is 0.07919
+
+### Q2:If significance level (∝) equals 0.05, do you accept alternative hypothesis (or reject null hypothesis) 
+Ans-  If the p-value is less than or equal to 0.05, you reject the null hypothesis and accept the alternative hypothesis, indicating statistical significance. If the p-value is greater than 0.05, you do not reject the null hypothesis, meaning there isn't enough evidence to support the alternative hypothesis.
+
+
+
+
+
+

@@ -1,0 +1,215 @@
+---
+title: "Linear Regression (Lab-11)"
+author: "Bibek Sapkota"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  word_document: default
+  pdf_document: default
+---
+
+# Linear Regression
+
+task 1:Loading the dataset
+```{r}
+dataset = read.csv("data-marketing-budget-12mo.csv")
+dataset
+```
+
+## Use ggplot to plot a scatter plot between variables
+
+```{r}
+library(ggplot2)
+
+ggplot(data = dataset, aes(x = Sales, y = Spend)) + geom_point(alpha= 0.3, color= "blue") 
+```
+
+## Q1:Write a command to plot sales for each month? 
+
+```{r}
+ggplot(data = dataset, aes(x = Month, y = Sales)) +
+  geom_line(color = "blue", size = 1) +
+  geom_point(color = "blue", size = 2) +
+  scale_x_continuous(breaks = 1:12, labels = month.name) +
+  labs(title = "Monthly Sales Time Series", x = "Month", y = "Sales") +
+  theme_minimal()
+```
+
+## Simple (One Variable) and Multiple Linear Regression 
+Using lm() 
+
+### One variable: 
+
+```{r}
+simple.fit = lm(Sales~Spend, data=dataset) 
+summary(simple.fit) 
+```
+
+### Multiple variables: 
+
+```{r}
+multi.fit = lm(Sales~Spend+Month, data=dataset) 
+summary(multi.fit) 
+```
+
+## Interpreting R’s Regression Output 
+
+task 1: Display each: # capture model summary as an object
+```{r}
+modelSummary <- summary(simple.fit) 
+```
+
+task 2: model coefficients 
+```{r}
+modelCoeffs <- modelSummary$coefficients 
+```
+
+task 3: get beta estimate for Spend - 10.6222 
+```{r}
+beta.estimate <- modelCoeffs["Spend", "Estimate"] 
+```
+
+task 4:  get std.error for Spend - 0.1624745 
+```{r}
+std.error <- modelCoeffs["Spend", "Std. Error"]
+```
+
+task 6: get t value for Spend - 65.37761 
+```{r}
+t_value <- modelCoeffs["Spend", "t value"]
+```
+
+task 7: get model F-statistic - 4274 1 10 
+```{r}
+f <- modelSummary$fstatistic 
+f_statistic <- modelSummary$fstatistic[1] 
+```
+
+task 8: get model p-value - 1.707e-14 
+```{r}
+model_p <- pf(f[1], f[2], f[3], lower=FALSE) 
+```
+
+task 9:get model R-squared - 0.9976659 
+```{r}
+r_2 <- modelSummary$r.squared 
+```
+
+
+## Q2: Based on residual, which model is better? Why?
+Ans- Based on residual Multiple Regression Output is better beacuse it has less error.
+
+
+## Q3: Try to write the multiple regression equation based on the numbers in the output (round to 1 decimal place). 
+Ans- Sales= 10.4 ⋅ Spend + 541.4 ⋅ Month − 567.6
+
+
+## R2 abd residual
+
+task 1:Loading data and creating linear regression and ploting the result
+```{r}
+library(readxl)
+
+pressure <- read_excel("pressure.xlsx") #Upload the data 
+lmTemp = lm(Pressure~Temperature, data = pressure) #Create the linear regression  
+plot(pressure, pch = 16, col = "blue") #Plot the results 
+abline(lmTemp) #Add a regression line 
+```
+
+task 2: Summarizing the lmTemp
+```{r}
+summary(lmTemp) 
+```
+
+task 3: ploting the residuals, use the command 
+plot(lmTemp$residuals).
+```{r}
+plot(lmTemp$residuals, pch = 16, col = "red") 
+```
+
+task 4: Printing the residuals in histogram
+```{r}
+hist(lmTemp$resid, main="Histogram of 
+Residuals", ylab="Residuals") 
+```
+
+## Use linear regression to predict: 
+
+```{r}
+a <- data.frame(Temperature = 170) 
+result <- predict(lmTemp,a) 
+print(result) 
+```
+## Q4: Use the linear regression to predict the pressure for temperature 40. Write your result.
+```{r}
+a <- data.frame(Temperature = 40) 
+result <- predict(lmTemp,a) 
+print(result)
+```
+Ans-  The prediction of the pressure for temperature 40 is 79.73636
+
+## Linear regression to impute missing values: 
+
+task 1: Giving the value of x,y,z and w
+```{r}
+x <- 1:10 
+y <- c(11,12,18,14,17, NA,NA,19,NA,27) 
+z <- sample(1:20, 10) 
+w <- c(seq(1,10,3), 3,5,7,6,6,9) 
+```
+
+task 2: Loading data into dataset
+```{r}
+data <- data.frame(x,y,z,w) 
+data 
+```
+
+task 3: Summarizing the data
+```{r}
+summary(data) 
+```
+##  Creating a dummy variable that will indicate missing data: 
+
+```{r}
+missDummy <- function(t) 
+{ 
+x <- dim(length(t)) 
+x[which(!is.na(t))] = 1 
+x[which(is.na(t))] = 0 
+return(x) 
+} 
+data$dummy <- missDummy(data$y) 
+data 
+```
+
+
+task 2: Next let us split data to 2sets (train and test): 
+```{r}
+TrainData<- data[data['dummy']==1,] 
+TestData<- data[data['dummy']==0,]
+
+TrainData<- TrainData[,-5] 
+TestData<- TestData[,-5] 
+```
+
+
+task 3:  Let's then fit a linear model with y as dependent variable and x as independent variable. 
+```{r}
+model<- lm(y~x, TrainData) 
+```
+
+task 4: Predict missing values based on the model: 
+```{r}
+pred<- predict(model, TestData)  
+pred 
+```
+
+task 5:Insert it back in the original 
+```{r}
+# Where are NAs? 
+data$y[is.na(y)] 
+ 
+# Replace with predicted 
+data$y[is.na(y)]<- pred 
+```

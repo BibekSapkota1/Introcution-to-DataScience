@@ -1,0 +1,352 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Outlier Detection (Lab-7)},
+  pdfauthor={Bibek Sapkota},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Outlier Detection (Lab-7)}
+\author{Bibek Sapkota}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{outlier-detection-part-2}{%
+\section{Outlier Detection (Part-2)}\label{outlier-detection-part-2}}
+
+\hypertarget{boxplot}{%
+\subsection{BoxPlot}\label{boxplot}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(}\StringTok{"tidyverse"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+## v dplyr     1.1.4     v readr     2.1.5
+## v forcats   1.0.0     v stringr   1.5.1
+## v ggplot2   3.5.0     v tibble    3.2.1
+## v lubridate 1.9.3     v tidyr     1.3.1
+## v purrr     1.0.2     
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+\end{verbatim}
+
+task 1:Ploting the data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(starwars}\SpecialCharTok{$}\NormalTok{height)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{OutliersDetection_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+task 2:Creating a new dataset that only includes males and feamles and
+creating a boxplot using R
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{starwars\_mf}\OtherTok{=}\NormalTok{ starwars }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(sex }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"male"}\NormalTok{, }\StringTok{"female"}\NormalTok{))}
+
+\FunctionTok{boxplot}\NormalTok{(starwars\_mf}\SpecialCharTok{$}\NormalTok{height)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{OutliersDetection_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+task 3:creating seprate boxplot for both
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{boxplot}\NormalTok{(height}\SpecialCharTok{\textasciitilde{}}\NormalTok{sex, }\AttributeTok{data =}\NormalTok{ starwars\_mf)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{OutliersDetection_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\hypertarget{q4-how-many-outliers-in-males-and-females}{%
+\paragraph{Q4: How many outliers in males and
+females?}\label{q4-how-many-outliers-in-males-and-females}}
+
+Ans- There is 1 outliers in females and 12 in males.
+
+task 4:Filtering out outlier values
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{outliers }\OtherTok{\textless{}{-}} \FunctionTok{boxplot}\NormalTok{(starwars\_mf}\SpecialCharTok{$}\NormalTok{height, }\AttributeTok{plot=}\ConstantTok{FALSE}\NormalTok{)}\SpecialCharTok{$}\NormalTok{out}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{q5-what-does-plotfalse-do}{%
+\paragraph{Q5: What does plot=FALSE
+do?}\label{q5-what-does-plotfalse-do}}
+
+Ans- Boxplot function in R, the plot=FALSE parameter is used to suppress
+the creation of a plot.
+
+\hypertarget{removing-outliers-from-the-dataset}{%
+\subsubsection{Removing outliers from the
+dataset}\label{removing-outliers-from-the-dataset}}
+
+task 1:First you need find in which rows the outliers are
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{starwars\_mf[}\FunctionTok{which}\NormalTok{(starwars\_mf}\SpecialCharTok{$}\NormalTok{height }\SpecialCharTok{\%in\%}\NormalTok{ outliers),] }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    <chr>     <int> <dbl> <chr>      <chr>      <chr>          <dbl> <chr> <chr> 
+##  1 Chewbac~    228   112 brown      unknown    blue             200 male  mascu~
+##  2 Yoda         66    17 white      green      brown            896 male  mascu~
+##  3 Wicket ~     88    20 brown      brown      brown              8 male  mascu~
+##  4 Sebulba     112    40 none       grey, red  orange            NA male  mascu~
+##  5 Ratts T~     79    15 none       grey, blue unknown           NA male  mascu~
+##  6 Dud Bolt     94    45 none       blue, grey yellow            NA male  mascu~
+##  7 Gasgano     122    NA none       white, bl~ black             NA male  mascu~
+##  8 Yarael ~    264    NA none       white      yellow            NA male  mascu~
+##  9 Lama Su     229    88 none       grey       black             NA male  mascu~
+## 10 Tarfful     234   136 brown      brown      blue              NA male  mascu~
+## # i 5 more variables: homeworld <chr>, species <chr>, films <list>,
+## #   vehicles <list>, starships <list>
+\end{verbatim}
+
+task 2:you can remove the rows containing the outliers, one possible
+option is:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{starwars\_mf\_new }\OtherTok{\textless{}{-}}\NormalTok{ starwars\_mf[}\SpecialCharTok{{-}}\FunctionTok{which}\NormalTok{(starwars\_mf}\SpecialCharTok{$}\NormalTok{ height }\SpecialCharTok{\%in\%}\NormalTok{ outliers),]}
+\end{Highlighting}
+\end{Shaded}
+
+task 3:check outliers with boxplot
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{boxplot}\NormalTok{(starwars\_mf\_new}\SpecialCharTok{$}\NormalTok{height) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{OutliersDetection_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\hypertarget{ux3c3-rule}{%
+\subsection{3σ Rule}\label{ux3c3-rule}}
+
+task 1: calculating standard deviation and mean
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sd\_value }\OtherTok{\textless{}{-}} \FunctionTok{sd}\NormalTok{(starwars\_mf}\SpecialCharTok{$}\NormalTok{height, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{sd\_value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 33.06843
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mean\_value }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(starwars\_mf}\SpecialCharTok{$}\NormalTok{height, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{mean\_value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 177.6338
+\end{verbatim}
+
+\hypertarget{q6-in-above-equations-what-should-be-given-as-the-value-of-na.rm-and-why}{%
+\paragraph{Q6: In above equations, what should be given as the value of
+na.rm and
+why?}\label{q6-in-above-equations-what-should-be-given-as-the-value-of-na.rm-and-why}}
+
+Ans- In the given equations, the value of na.rm should be TRUE. This is
+because na.rm stands for ``NA remove'', and setting it to TRUE will
+instruct the functions to remove any NA (missing) values before
+performing the calculation. If NA values are not removed, the functions
+sd and mean will return NA as the result because they cannot compute the
+standard deviation or mean with missing values present.
+
+task 2:Then calculate upper and lower bounds
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{upper\_bound }\OtherTok{\textless{}{-}}\NormalTok{ mean\_value }\SpecialCharTok{+} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sd\_value }
+\NormalTok{upper\_bound}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 276.8391
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lower\_bound }\OtherTok{\textless{}{-}}\NormalTok{ mean\_value }\SpecialCharTok{{-}} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sd\_value }
+\NormalTok{lower\_bound}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 78.42851
+\end{verbatim}
+
+task 3: Extract outliers
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{outliers\_sigma }\OtherTok{\textless{}{-}}\NormalTok{starwars\_mf }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{((height }\SpecialCharTok{\textgreater{}}\NormalTok{ upper\_bound)}\SpecialCharTok{|}\NormalTok{ (height }\SpecialCharTok{\textless{}}\NormalTok{ lower\_bound)) }
+\NormalTok{outliers\_sigma}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 14
+##   name  height  mass hair_color skin_color eye_color birth_year sex   gender   
+##   <chr>  <int> <dbl> <chr>      <chr>      <chr>          <dbl> <chr> <chr>    
+## 1 Yoda      66    17 white      green      brown            896 male  masculine
+## # i 5 more variables: homeworld <chr>, species <chr>, films <list>,
+## #   vehicles <list>, starships <list>
+\end{verbatim}
+
+\hypertarget{hampel-identifier}{%
+\subsection{Hampel Identifier}\label{hampel-identifier}}
+
+task 1: Calculate median and MAD
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{median\_value }\OtherTok{\textless{}{-}} \FunctionTok{median}\NormalTok{(starwars\_mf}\SpecialCharTok{$}\NormalTok{height, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{median\_value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 183
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{MAD\_value }\OtherTok{\textless{}{-}} \FunctionTok{mad}\NormalTok{ (starwars\_mf}\SpecialCharTok{$}\NormalTok{height, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }
+\NormalTok{MAD\_value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 19.2738
+\end{verbatim}
+
+\end{document}

@@ -1,0 +1,97 @@
+---
+title: "PCA"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# PCA
+
+## Loading the dataset and printing its first 6th values
+```{r}
+df <- iris[, -5]    
+head(df) 
+```
+
+## Center and scale the data 
+```{r}
+df.scaled <- scale(df, center = TRUE, scale = TRUE) 
+```
+
+## Compute the correlation matrix: 
+```{r}
+# 1. Correlation matrix 
+res.cor <- cor(df.scaled) 
+round(res.cor, 2) 
+```
+
+## Calculate the eigenvectors/eigenvalues of the correlation matrix: 
+```{r}
+# 2. Calculate eigenvectors/eigenvalues 
+res.eig <- eigen(res.cor) 
+res.eig 
+```
+
+##  Compute projection matrix 
+
+task 1:Define the dimensions of new data set 
+```{r}
+k <- 3 
+```
+
+task 2:Compute projection matrix (W) 
+```{r}
+W <- res.eig$vectors[,1:k] 
+```
+
+
+##  compute the new dataset: 
+
+task 1: Using matrix calculation
+```{r}
+df.new = df.scaled %*% W 
+```
+
+task 2:Assign new column names 
+```{r}
+colnames(df.new) <- c("PC1", "PC2", "PC3") 
+head(df.new) 
+```
+
+## Alternative method to compute new dataset 
+
+task 1: Transpose the intial data  
+```{r}
+df.scaled.t <- t(df.scaled) 
+```
+
+task 2: Transpose the projection matrix 
+```{r}
+W.t <- t(W)  
+```
+
+task 3: Compute transpose of new dataset
+```{r}
+df.new.t <- W.t %*% df.scaled.t 
+```
+
+task 4: Compute the new dataset 
+```{r}
+df.new <- t(df.new.t) 
+```
+
+task 5: Assign new column names 
+```{r}
+colnames(df.new) <- c("PC1", "PC2", "PC3") 
+head(df.new) 
+```
+
+
+
+
+
+
+
+
+

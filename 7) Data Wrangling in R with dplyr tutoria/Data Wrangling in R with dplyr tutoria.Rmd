@@ -1,0 +1,650 @@
+---
+title: "Week-5 Tutorial"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Data Wrangling in R with dplyr tutorial
+
+task 1: Install and Load the packages
+```{r}
+packages_to_install <- c("tidyverse")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(tidyverse)
+```
+
+task 2:Displaying the dataset
+```{r}
+starwars
+```
+
+## dplyr syntax
+
+task 1: Filter the data which have species Human.
+```{r}
+filter(starwars, species=="Human")
+```
+
+```{r}
+starwars[starwars$species=="Human"&!is.na(starwars$species),]
+```
+
+## The pipe %>% operator
+
+task 1:filtering the data by species Droid and then arrange it by its height 
+```{r}
+filter(starwars,species=="Droid")%>%
+  arrange(height)
+```
+
+task 2:Filtering the data by species and displaying it
+```{r}
+#Both are same but different ways of writing
+filter(starwars, species=="Human")
+starwars%>%filter(species=="Human")
+```
+
+```{r}
+starwars%>%
+  filter(species=="Human")
+```
+
+## Selecting columns with select()
+
+task 1:Using dplyr's glimpse() function to get a quick look at our data
+```{r}
+glimpse(starwars)
+```
+
+task 2:Displaying only selected columns
+```{r}
+starwars %>% 
+    select(name,	height,	mass,	hair_color,	skin_color,	
+               eye_color,	birth_year,	sex, gender,	homeworld,	species) 
+```
+
+task 3: Removing the selected columns
+```{r}
+starwars %>% select(-films, -vehicles, -starships) 
+```
+
+task 4:Displaying the table from name to species 
+```{r}
+starwars%>%select(name:species)
+```
+
+##  Rename your columns with rename()
+
+task 1:Renaming name columns to username
+```{r}
+starwars%>%
+  rename(username=name)
+```
+
+
+task 2:Displaying the data and then renaming the height column
+```{r}
+starwars%>%
+  select(name:species)%>%
+  rename(height_cm=height)
+```
+
+## Sort a data with arrange()
+
+task 1:Loading the data
+```{r}
+starwars
+```
+
+task 2:Diaplaying the data from name to mass and arrange it by height
+```{r}
+starwars %>%
+  select(name:mass) %>%
+  arrange(height)
+```
+
+task 3:Arranging the height columns in descending order
+```{r}
+starwars%>%
+  select(name:mass)%>%
+  arrange(desc(height))
+```
+
+task 4:Arranging the columns first by homeworld columns and then by height
+```{r}
+starwars %>% 
+  select(name, homeworld, height) %>% 
+  arrange(homeworld, desc(height))
+```
+
+## Select rows based on their position using slice()
+
+task 1:Displaying first 3 rows of the data from name to mass
+```{r}
+starwars%>%
+  slice(1:3)%>%
+  select(name:mass)
+```
+
+task 2: Arraning the data by height then displaying 1st 3 rows from name to mass
+```{r}
+starwars%>%
+  arrange(height)%>%
+  slice(1:3)%>%
+  select(name:mass)
+```
+
+## Subset your data with filter()
+
+task 1:using filter()  to filter species and homeworld
+```{r}
+starwars %>% 
+  select(name, species, homeworld, height, mass, birth_year) %>% 
+  filter(species=="Human" & homeworld=="Tatooine")
+```
+
+task 2:Using comma(,) in & operator
+```{r}
+starwars %>% 
+  select(name, species, homeworld, height, mass, birth_year) %>% 
+  filter(species=="Human", homeworld=="Tatooine")
+```
+
+task 3:Using '|' if we wanted characters that are either Humans or Droids  to represent 'or'
+```{r}
+starwars %>% 
+  select(name, species, homeworld, height, mass, birth_year) %>% 
+  filter(species=="Human" | species=="Droid")
+```
+
+task 4: rewriting above code using %in%  in place of |
+```{r}
+starwars %>% 
+  select(name, species, homeworld, height, mass, birth_year) %>% 
+  filter(species %in% c("Human", "Droid"))
+```
+
+task 5:Printing birthyear of 15,19 and 21 using %in% operator
+```{r}
+starwars %>% 
+  select(name, species, homeworld, height,  mass, birth_year) %>% 
+  filter(birth_year %in% c(15, 19, 21))
+```
+
+## Making robust filters with pull()
+
+task 1:Filtering using name
+```{r}
+starwars %>% 
+  filter(name %in% c("C-3PO", "R2-D2", "R5-D4"))
+```
+
+
+```{r}
+starwars %>% 
+  filter(name %in% c("C-3PO", "R2-D2", "R5-D4", "IG-88"))
+```
+
+task 2:Filtering species 
+```{r}
+starwars %>% 
+  filter(species=="Droid") 
+```
+
+task 3:Using pull() by passing it a data set and a column=name and it 'pulls' all the values into a vector
+```{r}
+starwars %>% 
+  pull(name)
+```
+
+task 4:pulling(data set, column) so it knows where to pull the names from
+```{r}
+trending <- sample_n(starwars, 10) %>% 
+             		select(name)
+
+starwars %>%
+  select(name:species) %>% 
+  filter(name %in% pull(trending, name))  
+```
+
+
+task 5:If we run the above code again we'll get a different 10 random characters
+```{r}
+trending <- sample_n(starwars, 10) %>% 
+             		select(name)
+
+starwars %>%
+  select(name:species) %>% 
+  filter(name %in% pull(trending, name))
+```
+
+## Create new columns with mutate()
+
+task 1:Creating new column usingmutate(new_column = something) 
+```{r}
+starwars %>%
+  select(name:mass) %>% 
+  mutate(BMI = mass/((height/100)^2))  
+```
+
+task 2:Converting height from cm into feet and weight from kg into pounds
+```{r}
+starwars %>% 
+  select(name:mass) %>%   
+  mutate(height_ft = height * 0.0328084,     
+              weight_pounds = mass*2.20462)  
+```
+
+task 3:Using a simple yes/no test i.e. taller than 6ft or not we can do this with ifelse():
+```{r}
+starwars %>% 
+  select(name:mass ) %>% 
+  mutate(height_ft = height * 0.0328084,
+         over_6ft = ifelse(height_ft>6, 1, 0))
+```
+
+task 4:Using multiple logical conditions in our mutate
+```{r}
+starwars %>% 
+  select(name:mass ) %>% 
+  mutate(height_ft = height * 0.0328084,
+               height_group = case_when(	is.na(height) ~ "Missing",
+                                 	 			height_ft<5   ~ "Under 5ft", 
+                                  				height_ft>6   ~ "Over  6ft", 
+                                  				TRUE  ~ "Between 5-6ft")) 
+```
+
+task 5:Displaying result what will come if we don't use TRUE at last
+```{r}
+starwars %>% 
+  select(name:mass ) %>% 
+  mutate(height_ft = height * 0.0328084,
+              height_group = case_when(is.na(height) ~ "Missing",
+                                 	 		   height_ft<5   ~ "Under 5ft", 
+                                  			   height_ft>6   ~ "Over  6ft")) 
+```
+
+## Window functions with mutate()
+
+task 1:creating new columns that contain summaries of data from within the table
+```{r}
+starwars %>% 
+  select(name:mass ) %>% 
+  mutate(avg_height = mean(height, na.rm=T)) 
+```
+
+task 2:Creating a new column that compares the individual height 
+```{r}
+starwars %>% 
+  select(name:mass) %>% 
+  mutate( avg_height = mean(height, na.rm=T),                
+         	height_index = height/avg_height,                  
+        	 height_group=case_when(height_index<=.8  ~ "short",
+                                      	            	    height_index>=1.2 ~ "tall", 
+                                		     	    TRUE  ~ "average"))
+```
+
+task 3:Just using the calculation directly as part of our height_index formula
+```{r}
+starwars %>% 
+  select(name:mass) %>% 
+  mutate(height_group=case_when(height / mean(height, na.rm=T)<=.8  ~ "short",
+                                                         height / mean(height, na.rm=T)>=1.2 ~ "tall", 
+                                                         TRUE  ~ "average"))
+```
+
+## Aggregating data using summarise()
+
+task 1:Using summarise to get average height of the data set:
+```{r}
+starwars %>% 
+  summarise(avg_height=mean(height, na.rm=T))
+```
+
+task 2:Summarizing the data
+```{r}
+starwars %>% 
+  summarise(num_records=n(),                              # Number of records in the table
+           	     distinct_species=n_distinct(species), # Number of unique values of "species"
+                     avg_mass=mean(mass, na.rm=T),             # Average mass excluding any missing values
+           	     median_mass=median(mass, na.rm=T),    # Median mass excluding any missing values
+           	     IQR_mass=IQR(mass, na.rm=T),     # The interquartile range for mass excluding any missing values
+           	     shortest=min(height, na.rm=T),        # Min value of height excluding any missing values
+            	     tallest=max(height, na.rm=T))          # Max value of height excluding any missing values
+```
+
+## dplyr + base R = conditional sums
+
+task 1:Displaying species in dataset
+```{r}
+starwars$species
+```
+
+task  2:Applying a logical condition to it which turns our vector into a logical one 
+```{r}
+starwars$species=="Human"
+```
+
+task 3:Doing same case in another way
+```{r}
+starwars$species=="Human" & !is.na(starwars$species)
+```
+
+task 4:Identifing entries labeled as "Human" and not missing, and then extract these "Human" entries for display.
+```{r}
+starwars$species
+
+starwars$species=="Human"& !is.na(starwars$species)
+
+starwars$species[starwars$species=="Human" & !is.na(starwars$species)]
+```
+
+task 5:Changing our filter to bring back all the names of the human characters rather instead of their species
+```{r}
+starwars$name[starwars$species=="Human"& !is.na(starwars$species)]
+```
+
+task 6: Using the length() function from base R which counts how many elements are in our vector.
+```{r}
+length(starwars$name[starwars$species=="Human" & !is.na(starwars$species)])
+```
+
+task 7:Using it to filter for character's heights and then  average these as normal.
+```{r}
+mean(starwars$height[starwars$species=="Human" & !is.na(starwars$species)],na.rm=T)
+```
+
+task 8:Using pipe %>%  to the subsequent functions.
+```{r}
+starwars %>%
+  summarise(number_humans= length(name[species=="Human" & !is.na(species)]),
+            number_droids= length(name[species=="Droid" & !is.na(species)]),
+            avg_height_humans= mean(height[species=="Human"& !is.na(species)],na.rm = T),
+            avg_height_droid= mean(height[species=="Droid" & !is.na(species)],na.rm = T))
+```
+
+## Aggregate by groups with group_by()
+
+task 1:Using group by to group.
+```{r}
+starwars%>%
+  group_by(species,gender)
+```
+
+task 2: Using ungroup to remove this group.
+```{r}
+starwars%>%
+  group_by(species,gender) %>%
+  ungroup()
+```
+
+task 3:Checking if a table has a group_by() already applied to it we can use the group_vars() function.
+```{r}
+starwars%>%
+  group_by(species,gender)%>%
+  group_vars()
+```
+
+task 4:calculating the average height for each of the different species in our data set.
+```{r}
+starwars%>%
+  group_by(species)%>%
+  summarise(avg_height=mean(height, na.rm = T))
+```
+
+task 5:If we want to use multiple groups at the same time we can just specify them all with a comma in between.
+```{r}
+starwars%>%
+  group_by(species,gender)%>%
+    summarise(avg_height=mean(height,na.rm = T))%>%
+  filter(n()>1)
+```
+
+task 6:It selects name, height, and species from the starwars dataset, groups by species, and adds columns for the average species height and height categorization relative to this average.
+```{r}
+starwars%>%
+  select(name, height, species) %>%
+  group_by(species)%>%
+  mutate(avg_species_height=mean(height, na.rm = T),
+         height_group=case_when(height/avg_species_height<=.8~"short",
+                                height/avg_species_height>=1.2~"tall",
+                                TRUE ~ "average"))
+```
+
+task 7:calculateing average height per species and per homeworld, and adds these as new columns.
+```{r}
+starwars%>%
+  select(name, height, species, homeworld)%>%
+  group_by(species)%>%
+  mutate(avg_height_species=mean(height,na.rm = T))%>%
+  group_by(homeworld)%>%
+  mutate(avg_height_homeworld=mean(height, na.rm = T))
+```
+
+task 8:It sorts height by descending order, selects the top 3 tallest individuals from each homeworld, and filters for homeworlds with at least 3 entries.
+```{r}
+starwars%>%
+  select(name, height, homeworld)%>%
+  arrange(desc(height))%>%
+  group_by(homeworld)%>%
+  slice(1:3)%>%
+  filter(n()>=3)
+```
+
+
+## Apply functions across multiple columns using across()
+
+task 1:calculates and summarizes the number of missing values for the species, name, and homeworld columns in the starwars dataset.
+```{r}
+starwars%>%
+  summarise(species = sum(is.na(species)),
+            name = sum(is.na(name)),
+            homeworld = sum(is.na(homeworld)))
+```
+
+task 2: Across using a vector of column names
+```{r}
+starwars %>%
+  summarise(across(c(species, name, homeworld), ~sum(is.na(.x))))
+```
+
+task 3:
+The across function in R applies a specified function to multiple columns in a data frame.
+```{r}
+verb(across(columns_to_go_across, ~ function_to_apply(.x)))
+```
+
+task 4:Using Across everything()
+```{r}
+starwars %>%
+  summarise(across(everything(), ~sum((is.na(.x)))))
+```
+
+task 5:Using the 'starts_with()' helper to pick all the columns starting with 's':
+```{r}
+starwars %>%
+  summarise(across(starts_with('s'), ~sum((is.na(.x)))))
+```
+
+task 6:Using and combine different selection helpers to pick which columns we want to call our function on
+```{r}
+starwars %>%
+  summarise(across(!c(species, name, homeworld), ~sum((is.na(.x)))))
+
+starwars %>%
+  summarise(across(where(is.numeric), ~sum((is.na(.x)))))
+
+starwars %>%
+  summarise(across(where(is.numeric) & !c(height), ~sum((is.na(.x)))))
+```
+
+task 7:Using the dplyr package in R to calculate the count of missing values across numeric columns (excluding the height column) in the starwars dataset, generating column-wise summaries with customized names.
+```{r}
+starwars %>%
+  summarise(across(where(is.numeric) & !c(height), ~sum((is.na(.x))), .names = "num_missing_{.col}"))
+
+starwars %>%
+  summarise(across(where(is.numeric) & !c(height), ~sum((is.na(.x))), .names = "{.col}_num_missing"))
+```
+
+task 8:Using dplyr to compute mean and standard deviation for numeric columns (excluding height) in the dataset, summarizing these statistics in a structured format.
+```{r}
+starwars %>%
+  summarise(across(where(is.numeric) & !c(height), list(mean =  ~mean(.x, na.rm=T),
+                                                       				  sd   =  ~sd(.x, na.rm=T))))
+```
+
+task 9:It selects columns from name to mass in the dataset, imputes missing numeric values with the mean of each respective column, and then filters rows where either height or mass is missing.
+```{r}
+starwars %>%
+  select(name:mass) %>% 
+  mutate(across(where(is.numeric), list(imputed =  ~ifelse(is.na(.x), mean(.x, na.rm=T), .x)))) %>% 
+  filter(is.na(height) | is.na(mass))
+```
+
+## Case Study: picking players for a basketball tournament
+
+task 1:It  filters characters with known heights, categorizes them into teams based on species.
+```{r}
+starwars %>%                                                     
+  select(name, species, height, mass) %>%                         
+  filter(!is.na(height)) %>%     # remove any characters with missing height                                  
+  mutate(team=case_when(	species == "Human" ~ "Human",   # create the 3 teams           
+                        			species == "Droid" ~ "Droid",
+                        			T ~ "All-Star 5")) %>% 
+  group_by(species) %>%                                              
+  mutate(mass=ifelse(    is.na(mass),  # for any characters missing mass use their species average
+                     			mean(mass, na.rm=T), 
+                     			mass)) %>% 
+  ungroup() %>%                                              
+  mutate(mass=ifelse(is.na(mass),  # for any characters still missing mass use total avg
+                     		   mean(mass, na.rm=T), 
+                     		   mass)) %>% 
+  arrange(team, desc(height), mass) %>% # sort by team, tallest - shortest and split any ties by lightest first
+  group_by(team) %>% 
+  mutate(rank=row_number()) %>% # rank by tallest-shortest by team                                   
+  filter(rank<=5) # keep the top 5 as they will form our team 
+```
+
+task 2:Selecting the top 5 by height within each team, and creates a scatterplot to visualize mass against height using ggplot2.
+```{r}
+starwars %>%                                                     
+  select(name, species, height, mass) %>%                         
+  filter(!is.na(height)) %>%     # remove any characters with missing height                                  
+  mutate(team=case_when(species == "Human" ~ "Human",   # create the 3 teams           
+                        species == "Droid" ~ "Droid",
+                        T ~ "All-Star 5")) %>% 
+  group_by(species) %>%                                              
+  mutate(mass=ifelse(is.na(mass),  # for any characters missing mass use their species average
+                     mean(mass, na.rm=T), 
+                     mass)) %>% 
+  ungroup() %>%                                              
+  mutate(mass=ifelse(is.na(mass),  # for any characters still missing mass use total avg
+                     mean(mass, na.rm=T), 
+                     mass)) %>% 
+  arrange(team, desc(height), mass) %>% # sort by team, tallest - shortest and split any ties by lightest first
+  group_by(team) %>% 
+  mutate(rank=row_number()) %>% # rank by tallest-shortest by team                                   
+  filter(rank<=5) %>%  # keep the top 5 as they will form our team 
+    ggplot(aes(x=mass, y=height, colour=team)) +     # Pass the pipeline to tidyverse plotting package ggplot2
+      geom_point(size=3)  # Create a scatterplot of height and weight to get an idea of who might win
+```
+
+## Case Study: finding the outlier
+
+task 1:It calculates the average and median mass of characters in the dataset, ignoring missing values.
+```{r}
+starwars %>% 
+  summarise(avg_mass=mean(mass, na.rm=T),
+            	     median_mass=median(mass, na.rm=T))
+```
+
+task 2:Displaying the outlier
+```{r}
+starwars %>% 
+  select(name, height, mass) %>%     # keep name, height and mass columns
+  filter(!is.na(mass)) %>%                   # remove any rows with missing mass
+  mutate(avg_mass=mean(mass),      # calculate the average mass for the data set
+              SD_mass=sd(mass),            # calculate the standard deviation of mass for the data set
+              outlier=ifelse(mass>(avg_mass+(3*SD_mass)),1,0)) %>%  # flag rows where mass > mean + 3xSD
+  arrange(desc(outlier)) %>%            # sort the data set so the outlier is at the top 
+  ggplot(aes(x=height, y=mass)) +    # pass it to ggplot() to visualise the data
+  geom_point(aes(colour = as.factor(-outlier)), size=3) + 
+  geom_text(aes(label=ifelse(outlier==1, as.character(name),'')), hjust=0.5, vjust=2) + 
+  theme(legend.position="none")
+```
+
+## Reshaping data with pivot from tidyr
+
+task 1:Creating the data
+```{r}
+# Create some long data
+starwars %>% 
+  filter(species %in% c("Human", "Kaminoan", "Twi'lek")) %>% 
+  group_by(species, sex) %>% 
+  summarise(avg_height= mean(height, na.rm=T))
+
+# Add pivot_wider() to reshape the data
+starwars %>% 
+  filter(species %in% c("Human", "Kaminoan", "Twi'lek")) %>% 
+  group_by(species, sex) %>% 
+  summarise(avg_height= mean(height, na.rm=T)) %>% 
+  pivot_wider(id_cols=species,   
+              	      names_from=sex,
+              	      values_from=avg_height)
+```
+
+task 2:sorting the results by the number of missing values in descending order
+```{r}
+# Create some wide data
+starwars %>%
+  summarise(across(everything(), ~sum((is.na(.x)))))
+
+# Add pivot_longer()
+starwars %>%
+  summarise(across(everything(), ~sum((is.na(.x))))) %>% 
+  pivot_longer( cols=everything(),
+              		 names_to = "variable",
+              		 values_to = "number_of_missing") %>% 
+  arrange(desc(number_of_missing))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

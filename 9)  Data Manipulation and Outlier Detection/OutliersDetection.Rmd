@@ -1,0 +1,110 @@
+---
+title: "Outlier Detection (Lab-7)"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+
+# Outlier Detection (Part-2)
+
+## BoxPlot
+
+```{r}
+library("tidyverse")
+```
+
+
+task 1:Ploting the data.
+```{r}
+hist(starwars$height)
+```
+
+task 2:Creating a new dataset that only includes males and feamles and creating a boxplot using R
+```{r}
+starwars_mf= starwars %>% filter(sex %in% c("male", "female"))
+
+boxplot(starwars_mf$height)
+```
+
+task 3:creating seprate boxplot for both
+```{r}
+boxplot(height~sex, data = starwars_mf)
+```
+
+#### Q4: How many outliers in males and females? 
+Ans- There is 1 outliers in females and 12 in males.
+
+task 4:Filtering out outlier values
+```{r}
+outliers <- boxplot(starwars_mf$height, plot=FALSE)$out
+```
+
+
+#### Q5: What does plot=FALSE do? 
+Ans- Boxplot function in R, the plot=FALSE parameter is used to suppress the creation of a plot. 
+
+### Removing outliers from the dataset
+
+task 1:First you need find in which rows the outliers are 
+```{r}
+starwars_mf[which(starwars_mf$height %in% outliers),] 
+```
+
+task 2:you can remove the rows containing the outliers, one possible option is: 
+```{r}
+starwars_mf_new <- starwars_mf[-which(starwars_mf$ height %in% outliers),]
+```
+
+task 3:check outliers with boxplot
+```{r}
+boxplot(starwars_mf_new$height) 
+```
+
+## 3σ Rule 
+
+task 1: calculating standard deviation and mean 
+```{r}
+sd_value <- sd(starwars_mf$height, na.rm = TRUE)
+sd_value
+mean_value <- mean(starwars_mf$height, na.rm = TRUE)
+mean_value
+```
+#### Q6: In above equations, what should be given as the value of na.rm and why? 
+Ans-  In the given equations, the value of na.rm should be TRUE. This is because na.rm stands for "NA remove", and setting it to TRUE will instruct the functions to remove any NA (missing) values before performing the calculation. If NA values are not removed, the functions sd and mean will return NA as the result because they cannot compute the standard deviation or mean with missing values present.
+
+
+task 2:Then calculate upper and lower bounds 
+```{r}
+upper_bound <- mean_value + 3*sd_value 
+upper_bound
+lower_bound <- mean_value - 3*sd_value 
+lower_bound
+```
+
+task 3: Extract outliers 
+```{r}
+outliers_sigma <-starwars_mf %>% filter((height > upper_bound)| (height < lower_bound)) 
+outliers_sigma
+```
+
+## Hampel Identifier
+
+task 1: Calculate median and MAD 
+```{r}
+median_value <- median(starwars_mf$height, na.rm = TRUE)
+median_value
+MAD_value <- mad (starwars_mf$height, na.rm = TRUE) 
+MAD_value
+```
+
+
+
+
+
+
+
+
+
+

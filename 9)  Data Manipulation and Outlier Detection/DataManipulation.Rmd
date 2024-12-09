@@ -1,0 +1,156 @@
+---
+title: "Data Wrangling (Lab-7)"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Data Manipulation (Part-1)
+
+task 1:
+```{r}
+library(tidyverse)
+
+demo_data <- read_csv("yrbss_demo.csv")
+demo_data
+```
+
+## Filter Rows
+
+### Filter by position
+```{r}
+slice(demo_data, 1:6)
+
+demo_data %>% slice(1:6)
+```
+
+### Filter by logical criteria
+
+task 1:Filter rows with age less than 15
+```{r}
+demo_data[demo_data$age<15,]
+
+demo_data %>% filter(age<15)
+```
+
+task 2:Filter rows using equality
+```{r}
+demo_data %>% filter(sex == "Female")
+demo_data %>% filter(!(grade == "9th"))
+```
+
+task 3: Filter rows using OR operator
+```{r}
+demo_data %>% filter((bmi<15) | (bmi>50))
+```
+
+task 4:Filter rows using %in% operator.
+```{r}
+demo_data %>% filter(grade %in% c("10th", "11th"))
+```
+
+task 5:Filter rows by multiple-column based criteria.
+```{r}
+demo_data %>% filter(bmi<20, stweight<50, sex == "Male")
+```
+
+#### Q1:Write the code to filter rows with percentage of bmi/stweight < 0.5.
+```{r}
+demo_data %>% filter((bmi / stweight) < 0.5)
+```
+
+
+### Filter within a selection of variables.
+
+task 1:Creating a temp_data by only using columns bmi and stweight
+```{r}
+temp_data <- demo_data %>% select(bmi, stweight)
+```
+
+task 2:Filtering rows where all variables greater than 2.4
+```{r}
+temp_data %>% filter_all(all_vars(.> 2.4))
+```
+
+task 3:Filtering rows where any variables are greater than 2.4
+```{r}
+temp_data %>% filter_all(any_vars(.> 2.4))
+```
+
+task 4:Filters rows in demo_data where both race values are "White".
+```{r}
+demo_data %>% filter_at(vars(starts_with("race")), all_vars(. == "White"))
+```
+
+task 5: Filter rows in demo_data where any of race values equals "Asian"
+```{r}
+demo_data %>% filter_at(vars(starts_with("race")), any_vars(. == "Asian"))
+```
+
+task 6:Filtering rows Which have none values for all numeric variables.
+```{r}
+demo_data %>% filter_if(is.numeric, all_vars(!is.na(.)))
+```
+
+### Select random rows from a dataframe
+
+```{r}
+set.seed(1234)
+
+demo_data %>% sample_n(5, replace = FALSE)
+
+demo_data %>% sample_frac(0.05, replace = FALSE)
+```
+
+### Select top n rows ordered by a variable
+
+task 1:Select the top 5 rows ordered by bmi
+```{r}
+demo_data %>% top_n(5, bmi)
+```
+
+task 2:Select the top5 rows ordered by bmi in all grades
+```{r}
+demo_data %>% group_by(grade) %>% top_n(5, bmi)
+```
+
+## Column operations
+
+### Select columns 
+```{r}
+demo_data[, c("record","age","sex")]
+
+demo_data %>% select(record, age, sex)
+demo_data %>% select(record:sex)
+```
+
+#### Q2: Explain the meaning of the output of: demo_data %>% select(-contains("r"))? 
+
+
+
+### Rename columns
+```{r}
+demo_data %>% rename(id = record)
+```
+
+### Add a new column
+```{r}
+demo_data %>% mutate(height_m = sqrt(stweight / bmi))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

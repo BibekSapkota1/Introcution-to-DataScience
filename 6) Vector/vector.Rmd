@@ -1,0 +1,744 @@
+---
+title: "R Notebook"
+author: "Bibek Sapkota"
+output:
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+# Vector Operators using R
+
+task 1: Create two vector a and b
+```{r}
+a <- 1:10
+b <- 1:10
+```
+
+```{r}
+class(a)
+class(b)
+```
+
+task 2: This is same as task-1
+```{r}
+c <- seq(1:10)
+d <- as.integer(c(1, 2, 3, 4, 5, 6, 7, 8, 9,10))
+```
+
+```{r}
+class(c)
+class(d)
+```
+
+task 3:Adding two vector
+```{r}
+(a+b)
+```
+
+## Using () for printing the output
+
+```{r}
+y <- seq(1, 10, length.out= 5)
+```
+
+task 1: printing the expression
+```{r}
+(y <- seq(1, 10, length.out= 5))
+```
+
+## Vector Operation using R
+
+task 1: Multiplying two vector
+```{r}
+a <- 1:10
+b <- 5
+
+(a*b)
+```
+
+```{r}
+a <- 1:10
+b <- 5
+c <- c(2,3,4,5,6,7,8,9,10,11)
+
+class(a)
+class(b)
+class(c)
+```
+
+## Blinding two column vector
+```{r}
+ac = cbind(a,c)
+print(ac)
+```
+
+```{r}
+acb <- ac * b
+print(acb)
+```
+
+```{r}
+class(acb)
+```
+
+## Calculating mean
+
+```{r}
+d <- apply(acb, MARGIN = 1, FUN =mean)
+print(d)
+```
+
+```{r}
+(acbd <- cbind(acb, d))
+```
+
+```{r}
+class(acbd)
+```
+
+```{r}
+summary(acbd)
+```
+## Vector Recycling
+
+```{r}
+a <- 1:10
+b <- 1:5
+
+(a+b)
+```
+
+```{r}
+a <- 1:10
+b <- 1:7
+
+(a+b)
+```
+
+## Function in R
+```{r}
+best_practice <- c("Let", "the", "compiter", "do", "the", "work")
+
+print_words <- function(sentence){
+  print(sentence[1])
+  print(sentence[2])
+  print(sentence[3])
+  print(sentence[4])
+  print(sentence[5])
+  print(sentence[6])
+}
+
+print_words(best_practice)
+```
+
+```{r}
+print_words(best_practice[-6])
+```
+
+## Deleting element from vector
+```{r}
+best_practice[-6]
+```
+
+```{r}
+best_practice <- c("Let", "the", "compiter", "do", "the", "work")
+
+print_words <- function(sentence){
+  for (word in sentence){
+    print(word)
+  }
+}
+
+print_words(best_practice)
+```
+
+```{r}
+print_words(best_practice[-6])
+```
+## Apply, lapply, sapply, vapply
+
+task 1: apply
+```{r}
+a <- 1:10
+b <- 10:20
+
+df <- data.frame(cbind (a, b) )
+```
+
+```{r}
+apply(df, MARGIN = 1, FUN = mean)
+```
+
+task 2: lapply
+```{r}
+a <- 1:10
+
+lapply(a, MARGIN=1, FUN= mean)
+```
+
+task 3:sapply
+```{r}
+sapply(a, MARGIN =1 , FUN= mean)
+```
+
+task4:vapply
+```{r}
+data <- list(l1 = c(1, 2, 3, 4),
+             l2 = c(5, 6, 7, 8))
+
+vapply(data, max, double(1) )
+```
+
+## Conditional Statements
+```{r}
+y <-10
+if (y<20){
+  x <- "Too Low"
+}else{
+  x <- "Too High"
+}
+
+print(x)
+```
+
+
+```{r}
+temp <- 35
+
+if (temp <= 0){
+    "freezing"
+}else if (temp <= 10){
+  "cold"
+}else if (temp <=20){
+  "cool"
+}else if (temp <=30){
+  "warm"
+}else{
+  "hot"
+}
+```
+
+# Exploring covid datasets
+
+1. Create data frame with these two column vectors in R Studio x = 1:30 y = x^3
+```{r}
+x <- as.numeric(1:30)
+y <- x^3
+
+df <- data.frame(x,y)
+
+str(df)
+```
+
+2. Create plot of x and y variables in R Studio and interpret it carefully
+```{r}
+plot(x,y)
+```
+
+3. Get appropriate correlation coefficient of this data in R Studio and interpret it carefully
+```{r}
+corr <- cor.test(x= df$x, y=df$y, method="spearman")
+corr
+```
+
+4. Transform the plot to linear using appropriate mathematical function in R Studio
+```{r}
+plot(log(df$x), log(df$y))
+```
+
+6. Create a new column vector z defined in the slide 18 of session two slide deck in R Studio.
+```{r}
+z <- c(1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,  4, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7)
+```
+
+7. Create a histogram of z variable in Rstudio and interpret it carefully
+```{r}
+hist(z)
+```
+
+8.Get summary statistics of z variable in R Studio and interpret it carefully
+```{r}
+summary(z)
+```
+
+9. Get box-plot of z variable in R Studio and interpret the result carefully
+```{r}
+boxplot(z)
+```
+
+10. Import “covnep_252days.csv” data in R Studio and describe the variables in it.
+
+```{r}
+packages_to_install <- c("readr")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(readr)
+```
+
+```{r}
+convnep_df <- read_csv("covnep_252days.csv", col_names = TRUE, col_types = cols(date = col_date(format = "%m/%d/%Y")))
+str(convnep_df)
+```
+
+11. Create a chart with “totalCases” variable in y-axis and “date” variable in the x-axis in R Studio, describe the process leading to the creation of this chart.
+```{r}
+plot(convnep_df$date, convnep_df$totalCases, type='l')
+```
+
+12. Get summary statistics of “totalCases” variable in R Studio and interpret it carefully
+```{r}
+summary(convnep_df$totalCases)
+```
+
+13. Create histogram of “newCases” variable in R Studio and interpret it carefully.
+```{r}
+hist(convnep_df$newCases)
+```
+
+14. Get summary statistics of “newCases” variable in R Studio and interpret it carefully.
+```{r}
+summary(convnep_df$newCases)
+```
+
+15. Get “box and whisker” plot of “newCases” variable in R Studio and interpret it carefully.
+```{r}
+boxplot(convnep_df$newCases)
+```
+
+16. Import “SAQ8.sav” data in R Studio and get frequency distribution (number and percentage of the attributes) of q01, q03, q06 and q08 variables on R Studio and interpret them carefully.
+```{r}
+packages_to_install <- c("haven")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(haven)
+```
+
+```{r}
+saq8_df <- read_sav("SAQ8.sav")
+
+str(saq8_df)
+```
+
+```{r}
+head(saq8_df, 10)
+```
+
+
+
+```{r}
+packages_to_install <- c("plyr")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(plyr)
+```
+
+```{r}
+# Define a function
+col_list <- list("q01", "q03", "q06", "q08")
+
+# Create a function frequency table
+frequency_table <- function(df, col_list) {
+  for(item in col_list) {
+    new_df <- count(df, item)
+    new_df$percentage <- round(new_df$freq / sum(new_df$freq) * 100, 2)
+    new_df$cumulative_percentage <- cumsum(new_df$percentage)
+    print(new_df)
+  }
+}
+
+frequency_table(saq8_df, col_list)
+```
+
+17. Import “MR_drugs.xls” data in R Studio and replicate multiple response frequency distribution as shown in the slide 35 of the session 2 slide deck.
+```{r}
+packages_to_install <- c("readxl")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(readxl)
+```
+
+```{r}
+drugs_df <- readxl::read_excel("MR_drugs.xls")
+
+str(drugs_df)
+```
+
+```{r}
+head(drugs_df, 10)
+```
+
+```{r}
+mr_drugs_df <- data.frame(
+  N = colSums(drugs_df[4:10]),
+  Percent = round(colSums(drugs_df[4:10]) / sum(drugs_df[4:10]) * 100, 2),
+  "Percent of Cases" = round(colSums(drugs_df[4:10]) / nrow(drugs_df[4:10]) * 100, 2)
+)
+
+print(mr_drugs_df)
+```
+
+```{r}
+# summary table as in spss
+# import library for table
+
+packages_to_install <- c("gt")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(gt)
+
+```
+
+```{r}
+# create table
+mr_drugs_df %>%
+  gt()%>%
+  tab_header(
+    title="$Income Frequencies"
+  ) %>%
+  tab_spanner(label="Responses", columns = c(N, Percent)) 
+
+#summary_rows(
+ #   columns = everything(),
+  #  fns = list(Total = ~mean(.))
+  #)
+  
+```
+
+#Pipe Operators
+
+1. Initialize a vector
+```{r}
+packages_to_install <- c("magrittr")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(magrittr)
+
+x <-c (0.109, 0.359, 0.63, 0.996, 0.515, 0.142, 0.017, 0.829, 0.907)
+
+# Compute the logarithm of `x`, 
+# return suitably lagged and iterated differences 
+# compute the exponential function and round the result
+round(exp(diff(log(x))), 1)
+```
+
+
+2. Using pipe operator
+```{r}
+x %>%
+  log() %>%
+  diff() %>%
+  exp() %>%
+  round(1)
+```
+
+## Different pipe operators
+
+
+```{r}
+#Other pipe operators 1
+x <- rnorm(100)
+
+(x %<>% abs %>% sort)
+```
+
+```{r}
+#Other pipe operators 2
+rnorm(200) %>%
+  matrix(ncol = 2) %T>%
+  plot %>% 
+  colSums
+```
+
+```{r}
+#Other pipe operators 2
+rnorm(200) %>%
+  matrix(ncol = 2) %T>%
+  plot %>% 
+  colSums
+```
+
+```{r}
+#The above code is a shortcut for this code:
+rnorm(200) %>%
+  matrix(ncol = 2) %T>%
+  { plot(.); . } %>% 
+  colSums
+```
+
+```{r}
+#Other pipe operator 3
+data.frame(z = rnorm(100)) %$% 
+  ts.plot(z)
+```
+
+```{r}
+#More examples:
+#Load the package, install if require!
+packages_to_install <- c("babynames")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(babynames)
+library(dplyr)
+```
+
+
+```{r}
+data("babynames")
+```
+
+```{r}
+sum(select(filter(babynames,sex=="M",name=="Taylor"),n))
+```
+
+```{r}
+# Do the same but now with `%>%`
+babynames%>%filter(sex=="M",name=="Taylor")%>%
+  select(n)%>%
+  sum
+```
+
+```{r}
+#Assigning new variable and using compound assignment pipe operator:
+# Load in the Iris data
+iris <- read.csv(url("http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"), header = FALSE)
+```
+
+
+```{r}
+# Add column names to the Iris data
+names(iris) <- c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species")
+```
+
+```{r}
+# Compute the square root of `iris$Sepal.Length` and assign it to the new variable
+iris$Sepal.Length.SQRT <- 
+  iris$Sepal.Length %>%
+  sqrt()
+```
+
+```{r}
+#Compound pipe operator:
+# Compute the square root of `iris$Sepal.Length` and assign it to the same variable
+iris$Sepal.Length %<>% sqrt
+```
+
+```{r}
+#The tee operator:
+set.seed(123)
+rnorm(200) %>%
+  matrix(ncol = 2) %T>%
+  plot %>% 
+  colSums
+```
+
+```{r}
+#Exposing pipe operator: comes handy when "data" argument is not needed in a function
+iris %>% 
+  subset(Sepal.Length > mean(Sepal.Length)) %$%
+  cor(Sepal.Length, Sepal.Width)
+```
+
+## dplyr Package in R
+
+```{r}
+#install.packages("hflights")
+packages_to_install <- c("hflights")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(hflights)
+#Without pipe operators:
+grouped_flights <- group_by(hflights, Year, Month, DayofMonth)
+flights_data <- select(grouped_flights, Year:DayofMonth, ArrDelay, DepDelay) 
+summarized_flights <- summarise(flights_data, 
+                                arr = mean(ArrDelay, na.rm = TRUE),     #Remove missing data!
+                                dep = mean(DepDelay, na.rm = TRUE))     #Remove missing data!
+```
+
+```{r}
+final_result <- filter(summarized_flights, arr > 30 | dep > 30) 
+final_result
+```
+
+```{r}
+# With pipe operators:
+hflights %>% 
+  group_by(Year, Month, DayofMonth) %>% 
+  select(Year:DayofMonth, ArrDelay, DepDelay) %>% 
+  summarise(arr = mean(ArrDelay, na.rm = TRUE), dep = mean(DepDelay, na.rm = TRUE)) %>% 
+  filter(arr > 30 | dep > 30)
+```
+
+```{r}
+#ARRNGE data with dplyr and pipe operators:
+#Ascending order
+iris %>%
+  select(starts_with("Sepal")) %>%
+  filter(Sepal.Length >=70) %>%
+  arrange(Sepal.Length)     #Sort data in ascending order
+```
+
+
+```{r}
+#Descending order:
+iris %>%
+  select(starts_with("Sepal")) %>%
+  filter(Sepal.Length >=70) %>%
+  arrange(desc(Sepal.Length))       #Sort data in descending order
+```
+
+```{r}
+#MUTATE with dplyr and pipe operators:
+iris %>%
+  select(contains("Sepal")) %>%
+  mutate(Sepal.Area = Sepal.Length * Sepal.Width)
+```
+
+```{r}
+iris %>%
+  select(ends_with("Length")) %>%
+  mutate(Length.Diff = Sepal.Length - Petal.Length)
+```
+
+```{r}
+iris %>%
+  select(ends_with("Length"), Species) %>%
+  rowwise() %>%
+  mutate(Length.Diff = Sepal.Length - Petal.Length)
+```
+
+```{r}
+iris %>%
+  select(contains("Sepal"), Species) %>%
+  transmute(Sepal.Area = Sepal.Length * Sepal.Width)
+
+```
+
+## We must use R markdown syntax R markdown with knitr and kable,
+
+```{r}
+knitr::kable(head(mtcars), digits = 2, align = c(rep("l", 4), rep("c", 4), rep("r", 4)))
+```
+
+
+```{r}
+packages_to_install <- c("xtable")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(xtable)
+```
+
+```{r}
+print(xtable(head(mtcars)), type = 'html')
+```
+
+# Packages in R
+
+1. Install and import dplyr,rjson  package
+```{r}
+packages_to_install <- c("dplyr", "rjson")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(dplyr)
+library(rjson)
+```
+
+2. Help on any install pacakage
+```{r}
+
+#help(rjson)
+#or
+#?rjson
+
+```
+
+3. Using the rjson library to read content from json file
+```{r}
+data <- fromJSON(file="jason_data.json") 
+print(data) 
+```
+
+4. Convert to dataframe 
+```{r}
+jason_data_frame <- as.data.frame(data) 
+print(jason_data_frame) 
+```
+
+5. 
+```{r}
+jason_data_frame$Salary <- as.numeric(jason_data_frame$Salary) 
+summary(jason_data_frame$Salary) 
+```
+
+6. Plotting the histogram 
+```{r}
+hist(jason_data_frame$Salary) 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

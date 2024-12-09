@@ -1,0 +1,2861 @@
+---
+title: "Introduction to R"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Tibbles
+
+Task 1:Loading the tidyverse package.
+```{r}
+library(tidyverse)
+```
+Task 2:Converting the iris dataset to a tibble.
+```{r}
+as_tibble(iris)
+```
+Task 3: Creating a tibble with columns "x," "y," and "z," where "x" ranges from 1 to 5, "y" is 1 for all rows, and "z" is calculated as the square of "x" plus "y" for each row.
+```{r}
+tibble(
+  x = 1:5, 
+  y = 1, 
+  z = x ^ 2 + y
+)
+```
+
+Task 4:Creating a tibble with columns named ":)" (representing "smile"), " " (representing "space"), and "2000" (representing "number").
+```{r}
+tb <- tibble(
+  `:)` = "smile", 
+  ` ` = "space",
+  `2000` = "number"
+)
+tb
+```
+
+Task 5:Creating a tibble with columns "x," "y," and "z," containing the values "a," 2, 3.6 and "b," 1, 8.5 respectively.
+
+```{r}
+tribble(
+  ~x, ~y, ~z,
+  
+  "a", 2, 3.6,
+  "b", 1, 8.5
+)
+```
+
+# Tibbles vs. data.frame
+
+Task-1:Creating a tibble with columns "a," "b," "c," "d," and "e," containing 1000 randomly generated values for each column, representing dates, numbers, and letters.
+
+```{r}
+tibble(
+  a = lubridate::now() + runif(1e3) * 86400,
+  b = lubridate::today() + runif(1e3) * 30,
+  c = 1:1e3,
+  d = runif(1e3),
+  e = sample(letters, 1e3, replace = TRUE)
+)
+```
+Task 2: Tnstalling the package
+```{r}
+package_to_install <- c("nycflights13")
+
+for (package_name in package_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+library(nycflights13)
+```
+
+Task 3: Printing the first 10 rows of the nycflights13::flights dataset with unlimited width.
+```{r}
+nycflights13::flights %>% 
+  print(n = 10, width = Inf)
+```
+
+
+Task 4: Viewing the nycflights13::flights dataset in a separate window for interactive exploration.
+```{r}
+nycflights13::flights %>% 
+  View()
+```
+
+## Subsetting
+
+Task 1: Creating a tibble named "df" with columns "x" and "y," then accessing the "x" column using different methods:
+```{r}
+df <- tibble(
+  x = runif(5),#function that generates random numbers from a uniform distribution
+  y = rnorm(5) # function that generates random numbers from a normal (Gaussian) distribution
+)
+
+df$x
+
+df[["x"]]
+
+df[[1]]
+
+df %>% .$x
+
+
+```
+## Interacting with older code
+Task-1: Determining the class of the object "tb" after converting it to a data frame.
+
+```{r}
+class(as.data.frame(tb))
+```
+## Exercises
+Task-1: How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).
+```{r}
+mtcars
+```
+Task-2
+```{r}
+# In a data.frame, extracting a non-existent column returns NULL,
+# whereas in a tibble, it raises an error, providing immediate feedback.
+# Other operations, such as extracting existing columns and subsets of columns,
+# behave similarly across both data frames and tibbles.
+# The default behavior of data.frames may lead to frustration
+# due to the lack of error feedback for non-existent columns,
+# potentially causing unnoticed mistakes and difficulty in debugging.
+# In contrast, tibbles offer more robust behavior, enhancing data integrity
+# and debugging efficiency.
+
+df <- data.frame(abc = 1, xyz = "a")
+
+# Extracting non-existent column in a data.frame
+df$x  # Returns NULL
+
+# Extracting existing column in a data.frame
+df[, "xyz"]  # Returns a data frame with one column containing the values of the "xyz" column
+
+# Extracting multiple columns in a data.frame
+df[, c("abc", "xyz")]  # Returns a data frame containing only the specified columns
+
+```
+Task-3:If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble?
+
+
+# No pacakages
+```{r}
+# heights <- read_csv("data/heights.csv")
+```
+
+Task 1:  listing several tables: table1, table2, table3, table4a, and table4b.
+```{r}
+table1
+table2
+table3
+table4a
+table4b
+```
+Task 2: Calculating the rate by dividing the number of cases by the population and then multiplying by 10,000 for table1.
+```{r}
+table1 %>% 
+  mutate(rate = cases / population * 10000)
+```
+Task 3: Counting the occurrences of each year in table1, using the 'cases' column as the weight.
+```{r}
+table1 %>% 
+  count(year, wt = cases)
+```
+Task 4: Creating a ggplot using table1, plotting 'year' against 'cases' with lines grouped by 'country' and colored in grey50, along with points colored by 'country'.
+
+```{r}
+library(ggplot2)
+ggplot(table1, aes(year, cases)) + 
+  geom_line(aes(group = country), colour = "grey50") + 
+  geom_point(aes(colour = country))
+```
+#  Pivoting
+## Longer
+Task-1: referring to 'table4a'
+```{r}
+table4a
+```
+Task-2: Reshaping table4a using pivot_longer for columns '1999' and '2000' into 'year' and 'cases'.
+```{r}
+table4a %>% 
+  pivot_longer(c(`1999`, `2000`), names_to = "year", values_to = "cases")
+```
+Task-3: Reshaping table4b with pivot_longer for columns '1999' and '2000' into 'year' and 'population'.
+```{r}
+table4b %>% 
+  pivot_longer(c(`1999`, `2000`), names_to = "year", values_to = "population")  #function transforms wide data into long format by stacking multiple columns into two: one for variable names and one for their corresponding values
+```
+Task-4: creating tidy datasets tidy4a and tidy4b by using pivot_longer on table4a and table4b to reshape them. Then, performing a left join on tidy4a and tidy4b.
+```{r}
+tidy4a <- table4a %>% 
+  pivot_longer(c(`1999`, `2000`), names_to = "year", values_to = "cases")
+tidy4b <- table4b %>% 
+  pivot_longer(c(`1999`, `2000`), names_to = "year", values_to = "population")
+left_join(tidy4a, tidy4b)
+```
+## Wider
+Task-1:Displaying table 2
+```{r}
+table2
+```
+
+Task-2: using the pivot_wider function on table2 to transform it from long to wide format, with 'type' becoming the new column names and 'count' being the corresponding values.
+```{r}
+table2 %>%
+    pivot_wider(names_from = type, values_from = count)
+```
+###########
+# Separating and uniting
+## Separate
+Task-1:displaying table3
+```{r}
+ table3
+```
+
+Task-2: Using the separate function on table3 splits the 'rate' column into two separate columns named 'cases' and 'population'.
+```{r}
+table3 %>% 
+  separate(rate, into = c("cases", "population"))
+```
+Task-3:Using the separate function on table3 splits the 'rate' column into two separate columns named 'cases' and 'population', using the '/' character as the separator.
+```{r}
+table3 %>% 
+  separate(rate, into = c("cases", "population"), sep = "/")
+```
+Task-4:Using the separate function on table3 splits the 'rate' column into two separate columns named 'cases' and 'population', converting the resulting columns to their appropriate data types.
+```{r}
+table3 %>% 
+  separate(rate, into = c("cases", "population"), convert = TRUE)
+```
+Task-5:  Applying the separate function to table3, the 'year' column is divided into two separate columns labeled 'century' and 'year', with the separator defined as the second character.
+```{r}
+table3 %>% 
+  separate(year, into = c("century", "year"), sep = 2)
+```
+## Unite
+
+Task-1: The unite function is applied to table5 to merge the 'century' and 'year' columns into a single column named 'new'.
+```{r}
+table5 %>% 
+  unite(new, century, year)
+```
+Task-2: unite function is applied to table5 to merge the 'century' and 'year' columns into a single column named 'new', with no separator between them.
+```{r}
+table5 %>% 
+  unite(new, century, year, sep = "")
+```
+#  Missing values
+Task-1: Create a tibble named "stocks" with columns "year", "qtr" (quarter), and "return", having data for 2015 and 2016, with quarterly returns specified and some missing entries as NA.
+```{r}
+stocks <- tibble(
+  year   = c(2015, 2015, 2015, 2015, 2016, 2016, 2016),
+  qtr    = c(   1,    2,    3,    4,    2,    3,    4),
+  return = c(1.88, 0.59, 0.35,   NA, 0.92, 0.17, 2.66)
+)
+```
+
+
+Task-2:Pivoting the "stocks" tibble to widen the data, extracting columns from the "year" variable and values from the "return" variable.
+```{r}
+stocks %>% 
+  pivot_wider(names_from = year, values_from = return)
+```
+
+Task-3: pivot the data to a wide format with columns for each year's returns, then reshape it back to a long format, keeping only the non-missing values in the "return" column.
+```{r}
+stocks %>% 
+  pivot_wider(names_from = year, values_from = return) %>% 
+  pivot_longer(
+    cols = c(`2015`, `2016`), 
+    names_to = "year", 
+    values_to = "return", 
+    values_drop_na = TRUE
+  )
+```
+Task-4:Filling missing combinations of "year" and "qtr" in the "stocks" dataset.
+```{r}
+stocks %>% 
+  complete(year, qtr)
+```
+Task-5:Creating a tibble named "treatment" containing information about individuals, their treatment groups, and their responses, with some missing values for the "person" column.
+```{r}
+treatment <- tribble(
+  ~ person,           ~ treatment, ~response,
+  "Derrick Whitmore", 1,           7,
+  NA,                 2,           10,
+  NA,                 3,           9,
+  "Katherine Burke",  1,           4
+)
+```
+Task-6: Filling the missing values in the "person" column of the "treatment" tibble.
+```{r}
+treatment %>% 
+  fill(person)
+
+```
+
+# Case Study
+Task-1: Loading data set
+```{r}
+who
+```
+
+Task-2:Pivoting the "who" dataset from wide to long format, condensing columns into "cases" and capturing the original column names in "key".
+```{r}
+who1 <- who %>% 
+  pivot_longer(
+    cols = new_sp_m014:newrel_f65, 
+    names_to = "key", 
+    values_to = "cases", 
+    values_drop_na = TRUE
+  )
+who1
+```
+Task-3:Counting the occurrences of each "key" in the "who1" dataset.
+```{r}
+  who1 %>% 
+    count(key)
+```
+Task-4:Replacing "newrel" with "new_rel" in the "key" column of the "who1" dataset to create "who2."
+```{r}
+who2 <- who1 %>% 
+  mutate(key = stringr::str_replace(key, "newrel", "new_rel"))
+who2
+```
+Task-5:Separating the "key" column in the "who2" dataset into "new," "type," and "sexage" columns using "_" as the separator to create "who3."
+```{r}
+who3 <- who2 %>% 
+  separate(key, c("new", "type", "sexage"), sep = "_")
+who3
+```
+Task-6:Counting the occurrences of each unique value in the "new" column of the "who3" dataset.
+```{r}
+who3 %>% 
+  count(new)
+```
+
+Task-7:Removing the "new", "iso2", and "iso3" columns from the "who3" dataset and assigning the result to "who4".
+```{r}
+who4 <- who3 %>% 
+  select(-new, -iso2, -iso3)
+```
+
+Task-8:Splitting the "sexage" column of the "who4" dataset into "sex" and "age" columns, separated by the first character, and assigning the result to "who5".
+```{r}
+who5 <- who4 %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+who5
+```
+Task-9:Transforming the "who" dataset from wide to long format, adjusting column names, extracting meaningful variables, dropping unnecessary columns, and splitting the "sexage" column into "sex" and "age".
+```{r}
+who %>%
+  pivot_longer(
+    cols = new_sp_m014:newrel_f65, 
+    names_to = "key", 
+    values_to = "cases", 
+    values_drop_na = TRUE
+  ) %>% 
+  mutate(
+    key = stringr::str_replace(key, "newrel", "new_rel")
+  ) %>%
+  separate(key, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+
+```
+
+
+## CH-13: Relational data
+
+Task-1:Loding the libraries
+```{r}
+library(tidyverse)
+library(nycflights13)
+```
+
+## nycflights13
+Task-1: airlines data
+```{r}
+airlines
+```
+
+Task-2: airports data
+```{r}
+airports
+```
+Task-3: planes data
+```{r}
+planes 
+```
+Task-4: weather data
+```{r}
+weather 
+```
+################################################################################
+
+# Keys 
+Task-1Counting the occurrences of each tail number in the "planes" table and filtering for those with more than one occurrence.
+```{r}
+planes %>% 
+  count(tailnum) %>% 
+  filter(n > 1)
+```
+
+Task-2:Counting the occurrences of each combination of year, month, day, hour, and origin in the "weather" table and filtering for those with more than one occurrence.
+```{r}
+weather %>% 
+  count(year, month, day, hour, origin) %>% 
+  filter(n > 1)
+```
+Task-3:Counting the occurrences of each combination of year, month, day, and flight in the "flights" table and filtering for those with more than one occurrence.
+```{r}
+flights %>% 
+  count(year, month, day, flight) %>% 
+  filter(n > 1)
+```
+Task-4:Counting the occurrences of each combination of year, month, day, and tail number in the "flights" table and filtering for those with more than one occurrence.
+```{r}
+flights %>% 
+  count(year, month, day, tailnum) %>% 
+  filter(n > 1)
+```
+# Mutating joins
+
+Task-1: Creating a subset of the "flights" table named "flights2" containing columns from "year" to "day", "hour", "origin", "dest", "tailnum", and "carrier".
+```{r}
+flights2 <- flights %>% 
+  select(year:day, hour, origin, dest, tailnum, carrier)
+flights2
+```
+Task-2:Removing the "origin" and "dest" columns from "flights2" table and then performing a left join with the "airlines" table, using the "carrier" column as the key for matching.
+```{r}
+flights2 %>%
+  select(-origin, -dest) %>% 
+  left_join(airlines, by = "carrier")
+```
+Task-3:Shortening the command by removing "selecting" and directly "mutating" the "name" column with the corresponding airline names from the "airlines" table based on the "carrier" column.
+```{r}
+flights2 %>%
+  select(-origin, -dest) %>% 
+  mutate(name = airlines$name[match(carrier, airlines$carrier)])
+```
+#  Understanding joins
+Task-1:Creating two tibbles, "x" and "y", each with a "key" column and an associated "val_x" or "val_y" column, respectively.
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     3, "x3"
+)
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2",
+     4, "y3"
+)
+
+x
+y
+```
+
+## Inner join
+Task-1:Joining tibbles `x` and `y` using an inner join operation based on the "key" column.
+```{r}
+x %>% 
+  inner_join(y, by = "key")
+```
+## Duplicate keys
+Task-1: Joining tibble x with tibble y using the common column "key".
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     2, "x3",
+     1, "x4"
+)
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2"
+)
+```
+
+Task-2:Performing a left join between tibble `x` and tibble `y` based on the common column "key".
+```{r}
+left_join(x, y, by = "key")
+```
+
+Task-3:Creating two tibbles, `x` and `y`, with columns "key", "val_x", and "val_y", populated with corresponding values.
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     2, "x3",
+     3, "x4"
+)
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2",
+     2, "y3",
+     3, "y4"
+)
+```
+
+Task-4:Performing a left join on tibbles `x` and `y` using the "key" column as the join key.
+```{r}
+left_join(x, y, by = "key")
+```
+# Defining the key columns
+Task-1:Performing a left join between the `flights2` tibble and the `weather` tibble.
+```{r}
+flights2 %>% 
+  left_join(weather)
+```
+Task-2:Performing a left join between the `flights2` tibble and the `planes` tibble using the "tailnum" column as the key.
+```{r}
+flights2 %>% 
+  left_join(planes, by = "tailnum")
+```
+Task-3:Performing a left join between the `flights2` tibble and the `airports` tibble, matching the "dest" column from `flights2` with the "faa" column from `airports`.
+```{r}
+flights2 %>% 
+  left_join(airports, c("dest" = "faa"))
+```
+
+Task-4:Performing a left join between the `flights2` tibble and the `airports` tibble, matching the "origin" column from `flights2` with the "faa" column from `airports`.
+```{r}
+flights2 %>% 
+  left_join(airports, c("origin" = "faa"))
+```
+#  Filtering joins
+Task-1: Calculating the top 10 destinations by counting the occurrences in the "dest" column of the `flights` tibble, sorted in descending order, and then displaying the result.
+```{r}
+top_dest <- flights %>%
+  count(dest, sort = TRUE) %>%
+  head(10)
+top_dest
+```
+Task-2: Filtering the `flights` tibble to include only rows where the destination (`dest`) matches any of the top 10 destinations identified in the previous step.
+```{r}
+flights %>% 
+  filter(dest %in% top_dest$dest)
+#%in% operator in R is used to check if elements in one vector are present in another vector
+```
+
+Task-3: Selecting rows from the `flights` dataset where the destination airport matches one of the top 10 destinations previously identified.
+```{r}
+flights %>% 
+  semi_join(top_dest)
+```
+Task-4: Filtering out flights with tail numbers present in the planes dataset and counting the occurrences of each unique tail number, sorting the result.
+```{r}
+flights %>%
+  anti_join(planes, by = "tailnum") %>%
+  count(tailnum, sort = TRUE)
+```
+# Set operations
+Task-1:creating two tibbles, df1 and df2, each with columns x and y, containing sample data.
+```{r}
+df1 <- tribble(
+  ~x, ~y,
+   1,  1,
+   2,  1
+)
+df2 <- tribble(
+  ~x, ~y,
+   1,  1,
+   1,  2
+)
+```
+
+Task-2:performing set operations on the tibbles df1 and df2, including intersection, union, and set differences.
+```{r}
+intersect(df1, df2)
+union(df1, df2)
+setdiff(df1, df2)
+setdiff(df2, df1)
+```
+
+# CH-14: Strings
+Basic Info:string1 <- "This is a string"
+           string2 <- 'If I want to include a "quote" inside a string, I use single quotes'
+           
+Task-1:To include a literal single or double quote in a string you can use \ to “escape” it         
+```{r}
+double_quote <- "\"" # or '"'
+single_quote <- '\'' # or "'"
+```
+
+Task-2: Understanding the character 
+```{r}
+
+x <- c("\"", "\\") #backslash is escape character
+x
+writeLines(x)
+```
+#  String length
+Task-1:
+```{r}
+str_length(c("a", "R for data science", NA))
+```
+
+# Combining strings
+Task-1:Combining  the strings
+```{r}
+str_c("x", "y")
+str_c("x", "y", "z")
+```
+Task-2:Using the sep argument to control how they’re separated.
+```{r}
+str_c("x", "y", sep = ", ")
+```
+Task-3:Performing concatenation with "|" and "-" at both ends of each element of vector x, and replacing NA values with empty strings before concatenation.
+```{r}
+x <- c("abc", NA)
+str_c("|-", x, "-|")
+str_c("|-", str_replace_na(x), "-|")
+```
+Task-4: concatenating each element of the vector c("a", "b", "c") with a prefix "prefix-" and a suffix "-suffix".
+```{r}
+str_c("prefix-", c("a", "b", "c"), "-suffix")
+```
+Task-5: combining strings
+```{r}
+name <- "Hadley"
+time_of_day <- "morning"
+birthday <- FALSE
+
+str_c(
+  "Good ", time_of_day, " ", name,
+  if (birthday) " and HAPPY BIRTHDAY",
+  "."
+)
+```
+# Subsetting strings
+Task-1:Extracting the first three characters from each element in the vector `x` using `str_sub`.
+```{r}
+x <- c("Apple", "Banana", "Pear")
+str_sub(x, 1, 3)
+```
+Task-2:negative numbers count backwards from end
+```{r}
+str_sub(x, -3, -1)
+```
+Task-3:using the assignment form of str_sub() to modify strings
+```{r}
+str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
+x
+```
+
+# Locales
+Task-1:Changing the case 
+```{r}
+str_to_upper(c("i", "ı"))
+str_to_upper(c("i", "ı"), locale = "tr")
+```
+Task-2:Sorting the character vector x alphabetically using the English (en) locale and the Hawaiian (haw) locale.
+```{r}
+x <- c("apple", "eggplant", "banana")
+str_sort(x, locale = "en") 
+str_sort(x, locale = "haw") 
+```
+#  Matching patterns with regular expressions
+
+## Basic matches
+Task-1:Searching for the pattern "an" within each element of `x` and displaying the matches.
+```{r}
+x <- c("apple", "banana", "pear")
+str_view(x, "an")
+```
+
+Task-2:Displaying elements in `x` where any character is followed by "a" and then any character.
+```{r}
+str_view(x, ".a.")
+```
+Task-3 
+```{r}
+# To create the regular expression, we need \\
+dot <- "\\."
+
+# But the expression itself only contains one:
+writeLines(dot)
+
+# And this tells R to look for an explicit .
+str_view(c("abc", "a.c", "bef"), "a\\.c")
+
+```
+Task-4: Displaying elements in `x` where the sequence "\\" occurs.
+```{r}
+x <- "a\\b"
+writeLines(x)
+
+str_view(x, "\\\\")
+```
+##  Anchors
+Task-1: Displaying elements in `x` that start with "a" and end with "a" respectively.
+```{r}
+x <- c("apple", "banana", "pear")
+str_view(x, "^a")
+str_view(x, "a$")
+```
+Task-2: Highlighting "apple" occurrences in `x` and instances where it's the only content.
+```{r}
+x <- c("apple pie", "apple", "apple cake")
+str_view(x, "apple")
+str_view(x, "^apple$")
+```
+## Character classes and alternatives
+
+Task-1: Visualizing patterns matching "a.c", "a*c", and "a c" in the provided character vector.
+```{r}
+str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
+str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
+str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
+```
+Task-2: Visualizing patterns matching "grey" or "gray" in the provided character vector.
+```{r}
+str_view(c("grey", "gray"), "gr(e|a)y")
+```
+## Repetition
+Task-1:Identifying patterns "CC" or "C" in the string "1888 is the longest year in Roman numerals
+```{r}
+x <- "1888 is the longest year in Roman numerals: MDCCCLXXXVIII"
+str_view(x, "CC?")
+```
+Task-2: Viewing the pattern "CC"
+```{r}
+str_view(x, "CC+")
+```
+Task-3: Viewing the pattern "C[LX]+"
+```{r}
+str_view(x, 'C[LX]+')
+```
+Task-4:Viewing the pattern "C{2},C{2,},c{2,3}"
+```{r}
+str_view(x, "C{2}")
+str_view(x, "C{2,}")
+str_view(x, "C{2,3}")
+```
+## Grouping and backreferences
+Task-1:Grouping
+```{r}
+str_view(fruit, "(..)\\1", match = TRUE)
+```
+
+## Detect matches
+Task-1: Checking for the presence of the letter "e" in each word 
+```{r}
+x <- c("apple", "banana", "pear")
+str_detect(x, "e")
+```
+
+Task-2:Checking how many common words start with t
+```{r}
+sum(str_detect(words, "^t"))
+```
+
+Task-3: Checking proportion of common words end with a vowel
+```{r}
+mean(str_detect(words, "[aeiou]$"))
+```
+Task-4:Finding all words containing at least one vowel, and negate
+```{r}
+no_vowels_1 <- !str_detect(words, "[aeiou]")
+```
+
+Task-5:Finding all words consisting only of consonants (non-vowels)
+```{r}
+no_vowels_2 <- str_detect(words, "^[^aeiou]+$")
+identical(no_vowels_1, no_vowels_2)
+```
+
+Task-6: Filtering words that end with the letter "x" from a list of words.
+```{r}
+words[str_detect(words, "x$")]
+str_subset(words, "x$")
+```
+Task-7: Filtering a tibble for words that end with "x".
+```{r}
+df <- tibble(
+  word = words, 
+  i = seq_along(word)
+)
+df %>% 
+  filter(str_detect(word, "x$"))
+```
+
+Task-8:Counting the occurrences of "a" in each element of a character vector.
+```{r}
+x <- c("apple", "banana", "pear")
+str_count(x, "a")
+```
+Task-9: Seeing average of how many vowels per word
+```{r}
+mean(str_count(words, "[aeiou]"))
+```
+Task-10: Adding columns to a tibble to count vowels and consonants in each word.
+```{r}
+df %>% 
+  mutate(
+    vowels = str_count(word, "[aeiou]"),
+    consonants = str_count(word, "[^aeiou]")
+  )
+```
+
+Task-11:Counting "aba" occurrences in "abababa" and showing all "aba" instances.
+```{r}
+str_count("abababa", "aba")
+str_view_all("abababa", "aba")
+```
+## Extract matches
+Task-1: Displaying the length of sentences and showing the first few sentences.
+```{r}
+length(sentences)
+head(sentences)
+```
+
+Task-2: Creating a string pattern to match colors by concatenating them with a pipe delimiter.
+```{r}
+colours <- c("red", "orange", "yellow", "green", "blue", "purple")
+colour_match <- str_c(colours, collapse = "|")
+colour_match
+```
+Task-3: Filter sentences for colors and extract matches, showing the first few.
+```{r}
+has_colour <- str_subset(sentences, colour_match)
+matches <- str_extract(has_colour, colour_match)
+head(matches)
+```
+Task-4:Showing all sentences containing multiple colors and highlight the matches.
+```{r}
+more <- sentences[str_count(sentences, colour_match) > 1]
+str_view_all(more, colour_match)
+```
+Task-5:Extracting all color matches from the subset of sentences containing multiple colors.
+```{r}
+str_extract(more, colour_match)
+```
+
+Task-6:Extracting all occurrences of colors from the subset of sentences containing multiple colors.
+```{r}
+str_extract_all(more, colour_match)
+```
+Task-7: Extracting colors from sentences with multiple colors and simplify, also extract lowercase letters from each element in x and simplify.
+```{r}
+str_extract_all(more, colour_match, simplify = TRUE)
+x <- c("a", "a b", "a b c")
+str_extract_all(x, "[a-z]", simplify = TRUE)
+```
+## Grouped matches 
+Task-1: Extracting sentences containing nouns defined by a pattern, then extracts the nouns from those sentences.
+```{r}
+noun <- "(a|the) ([^ ]+)"
+
+has_noun <- sentences %>%
+  str_subset(noun) %>%
+  head(10)
+has_noun %>% 
+  str_extract(noun)
+```
+
+Task-2:
+```{r}
+has_noun %>% 
+  str_match(noun)
+```
+Task-3:Creating a tibble with columns 'article' and 'noun' extracted from sentences based on a pattern.
+```{r}
+tibble(sentence = sentences) %>% 
+  tidyr::extract(
+    sentence, c("article", "noun"), "(a|the) ([^ ]+)", 
+    remove = FALSE
+  )
+```
+## Replacing matches
+Task-1: Replacing the first vowel in each word of x with a hyphen.
+        Replacing all vowels in each word of x with a hyphen.
+```{r}
+x <- c("apple", "pear", "banana")
+str_replace(x, "[aeiou]", "-")
+str_replace_all(x, "[aeiou]", "-")
+```
+Task-2: Replacing numeric values in x with their corresponding word representations.
+```{r}
+x <- c("1 house", "2 cars", "3 people")
+str_replace_all(x, c("1" = "one", "2" = "two", "3" = "three"))
+```
+Task-3:Reordering words in sentences by swapping the second and third word positions.
+```{r}
+sentences %>% 
+  str_replace("([^ ]+) ([^ ]+) ([^ ]+)", "\\1 \\3 \\2") %>% 
+  head(5)
+```
+# Splitting
+Task-1: Splitting the first five sentences into words.
+```{r}
+sentences %>%
+  head(5) %>% 
+  str_split(" ")
+```
+Task-2:Splitting the string 'a|b|c|d' by '|' into a vector of elements.
+```{r}
+"a|b|c|d" %>% 
+  str_split("\\|") %>% 
+  .[[1]]
+```
+Task-3:Splitting the first 5 sentences by space into a matrix of words.
+```{r}
+sentences %>%
+  head(5) %>% 
+  str_split(" ", simplify = TRUE)
+```
+Task-4:Splitting each field string into two parts at the first occurrence of ': '.
+```{r}
+fields <- c("Name: Hadley", "Country: NZ", "Age: 35")
+fields %>% str_split(": ", n = 2, simplify = TRUE)
+```
+Task-5: Display word boundaries, split by spaces, and split by word boundaries, respectively.
+```{r}
+x <- "This is a sentence.  This is another sentence."
+str_view_all(x, boundary("word"))
+str_split(x, " ")[[1]]
+str_split(x, boundary("word"))[[1]]
+```
+# Other types of pattern
+
+Task-1: 
+```{r}
+# The regular call:
+str_view(fruit, "nana")
+# Is shorthand for
+str_view(fruit, regex("nana"))
+```
+Task-2:Visualizing occurrences of "banana" in different case variations.
+```{r}
+bananas <- c("banana", "Banana", "BANANA")
+str_view(bananas, "banana")
+str_view(bananas, regex("banana", ignore_case = TRUE))
+```
+Task-3: Extracting all lines starting with "Line" from the text.
+```{r}
+x <- "Line 1\nLine 2\nLine 3"
+str_extract_all(x, "^Line")[[1]]
+```
+Task-4: Extracting all occurrences of lines starting with "Line" from the text, considering each line separately.
+```{r}
+str_extract_all(x, regex("^Line", multiline = TRUE))[[1]]
+```
+Task-5:Creating a regular expression pattern for phone numbers, allowing for variations in formatting, and attempting to match it against the provided phone number.
+```{r}
+phone <- regex("
+  \\(?     # optional opening parens
+  (\\d{3}) # area code
+  [) -]?   # optional closing parens, space, or dash
+  (\\d{3}) # another three numbers
+  [ -]?    # optional space or dash
+  (\\d{3}) # three more numbers
+  ", comments = TRUE)
+
+str_match("514-791-8141", phone)
+```
+Task-6:Installling the package and Benchmarking string detection in "sentences" using fixed and regex patterns 20 times each, comparing performance with microbenchmark.
+```{r}
+
+package_to_install <- c("microbenchmark")
+
+for (package_name in package_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+library(microbenchmark)
+
+microbenchmark::microbenchmark(
+  fixed = str_detect(sentences, fixed("the")),
+  regex = str_detect(sentences, "the"),
+  times = 20
+  )
+```
+Task-7:Starting with a1 being "\u00e1" and a2 being "a\u0301", both representing the character "á", they are compared for equality.
+```{r}
+a1 <- "\u00e1"
+a2 <- "a\u0301"
+c(a1, a2)
+a1 == a2
+```
+Task-8: Checking if `a1` contains the fixed string `a2` returns `FALSE`, whereas using collation rules returns `TRUE`.
+```{r}
+str_detect(a1, fixed(a2))
+
+str_detect(a1, coll(a2))
+```
+Task-9:Creating a vector `i` with different forms of the letter "i", then using `str_subset` to filter them based on collation.
+```{r}
+i <- c("I", "İ", "i", "ı")
+i
+str_subset(i, coll("i", ignore_case = TRUE))
+str_subset(i, coll("i", ignore_case = TRUE, locale = "tr"))
+```
+
+Task-10: Fetching locale information.
+```{r}
+stringi::stri_locale_info()
+
+```
+Task-11:Visualizing word boundaries and extracts all words from the string.
+```{r}
+x <- "This is a sentence."
+str_view_all(x, boundary("word"))
+str_extract_all(x, boundary("word"))
+```
+# CH-15: Factors
+## Creatig factors
+Task-1:Adding character vector in variable x1
+```{r}
+x1 <- c("Dec", "Apr", "Jan", "Mar")
+```
+
+Task-2:Adding character vector in variable x2
+```{r}
+x2 <- c("Dec", "Apr", "Jam", "Mar")
+```
+
+Task-3:Sorting X1 
+```{r}
+sort(x1)
+
+```
+Task-4:Adding Character vector in month_levels
+```{r}
+month_levels <- c(
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+)
+```
+
+Task-5:Assigning the factor levels to the variable x1, using the predefined month_levels.
+```{r}
+y1 <- factor(x1, levels = month_levels)
+y
+```
+Task-6:Sorting the factor levels in y1.
+```{r}
+sort(y1)
+```
+Task-7:creating a factor y2 from x2 with custom levels specified by month_levels.
+```{r}
+y2 <- factor(x2, levels = month_levels)
+y2
+```
+Task-8:parsing the values in x2 as factors
+```{r}
+y2 <- parse_factor(x2, levels = month_levels)
+```
+Task-9: omitting the levels.
+```{r}
+factor(x1)
+```
+Task-10:Creating a factor f1 from the values in x1, using the unique values of x1 as levels.
+```{r}
+f1 <- factor(x1, levels = unique(x1))
+f1
+```
+Task-11: creating a factor f2 from the values in x1, ordering them according to their appearance in x1.
+```{r}
+f2 <- x1 %>% factor() %>% fct_inorder()
+f2
+```
+Task-12:Omitting levels2
+```{r}
+levels(f2)
+```
+# General Social Survey
+Task-1:Loading datasets
+```{r}
+gss_cat
+```
+
+Task-2:Seeing levels through count()
+```{r}
+gss_cat %>%
+  count(race)
+```
+Task-3:Also seeing through bar()
+```{r}
+ggplot(gss_cat, aes(race)) +
+  geom_bar()
+```
+
+Task-4:Generating a bar plot using ggplot()
+```{r}
+ggplot(gss_cat,aes(race))+geom_bar()+scale_x_discrete(drop=FALSE)
+```
+# Modifying factor order
+Task-1:calculating summary statistics and then creating scatter plot 
+```{r}
+relig_summary <- gss_cat %>%
+  group_by(relig) %>%
+  summarise(
+    age = mean(age, na.rm = TRUE),
+    tvhours = mean(tvhours, na.rm = TRUE),
+    n = n()
+  )
+
+ggplot(relig_summary, aes(tvhours, relig)) + geom_point()
+```
+
+Task-2:Generating a scatter plot using `ggplot`, where the x-axis represents the mean TV hours (`tvhours`), and the y-axis represents the `relig` variable reordered by mean TV hours.
+```{r}
+ggplot(relig_summary, aes(tvhours, fct_reorder(relig, tvhours))) +
+  geom_point()
+```
+Task-3:Creating a scatter plot using ggplot.
+```{r}
+relig_summary %>%
+  mutate(relig = fct_reorder(relig, tvhours)) %>%
+  ggplot(aes(tvhours, relig)) +
+    geom_point()
+```
+Task-4:Generating a scatter plot using ggplot
+```{r}
+rincome_summary <- gss_cat %>%
+  group_by(rincome) %>%
+  summarise(
+    age = mean(age, na.rm = TRUE),
+    tvhours = mean(tvhours, na.rm = TRUE),
+    n = n()
+  )
+
+ggplot(rincome_summary, aes(age, fct_reorder(rincome, age))) + geom_point()
+```
+Task-5: creates a scatter plot of the average age by income level, with "Not applicable" as the reference level for income
+```{r}
+ggplot(rincome_summary, aes(age, fct_relevel(rincome, "Not applicable"))) +
+  geom_point()
+```
+Task-6:calculating the proportion of each marital status group across different age groups and creates a line plot showing the distribution of marital status proportions by age.
+```{r}
+by_age <- gss_cat %>%
+  filter(!is.na(age)) %>%
+  count(age, marital) %>%
+  group_by(age) %>%
+  mutate(prop = n / sum(n))
+
+ggplot(by_age, aes(age, prop, colour = marital)) +
+  geom_line(na.rm = TRUE)
+
+ggplot(by_age, aes(age, prop, colour = fct_reorder2(marital, age, prop))) +
+  geom_line() +
+  labs(colour = "marital")
+```
+Task-7: Adjusting the order of the "marital" variable based on frequency and then reverses the order before generating a bar plot illustrating the distribution of marital status.
+```{r}
+gss_cat %>%
+  mutate(marital = marital %>% fct_infreq() %>% fct_rev()) %>%
+  ggplot(aes(marital)) +
+    geom_bar()
+```
+# Modifying factor levels
+
+Task-1: counting the frequency of each unique value in the "partyid" variable of the "gss_cat" dataset.
+```{r}
+gss_cat%>%count(partyid)
+```
+Task-2:Recording the levels of the "partyid" variable in the "gss_cat" dataset and then counts the frequency of each unique recorded value.
+```{r}
+gss_cat %>%
+  mutate( partyid=fct_recode(partyid,
+    "Republican, strong"    = "Strong republican",
+    "Republican, weak"      = "Not str republican",
+    "Independent, near rep" = "Ind,near rep",
+    "Independent, near dem" = "Ind,near dem",
+    "Democrat, weak"        = "Not str democrat",
+    "Democrat, strong"      = "Strong democrat"
+    ))%>%
+  count(partyid)
+```
+Task-3:Recategorizing and counting party affiliations in the "gss_cat" dataset.
+```{r}
+gss_cat %>%
+  mutate(partyid = fct_recode(partyid,
+    "Republican, strong"    = "Strong republican",
+    "Republican, weak"      = "Not str republican",
+    "Independent, near rep" = "Ind,near rep",
+    "Independent, near dem" = "Ind,near dem",
+    "Democrat, weak"        = "Not str democrat",
+    "Democrat, strong"      = "Strong democrat",
+    "Other"                 = "No answer",
+    "Other"                 = "Don't know",
+    "Other"                 = "Other party"
+  )) %>%
+  count(partyid)
+```
+Task-4: Collapsing categories within the "partyid" variable in the "gss_cat" dataset into broader groups and then counting the frequency of each collapsed category.
+```{r}
+gss_cat%>%
+  mutate(partyid=fct_collapse(partyid,
+                              other=c("No answer", "Don't know", "Other party"),
+                              rep=c("Strong republican", "Not str republican"),
+                              ind=c("Ind,near rep", "Independent", "Ind,near dem"),
+                              dem=c("Not str democrat", "Strong democrat"))) %>%
+  count(partyid)
+```
+
+Task-5:Counting and aggregating religious affiliations in the "gss_cat" dataset after lumping together less frequent categories.
+```{r}
+gss_cat %>%
+  mutate(relig = fct_lump(relig)) %>%
+  count(relig)
+```
+Task-6:"Summarizing religious affiliations after lumping infrequent categories and sort."
+```{r}
+gss_cat %>%
+  mutate(relig = fct_lump(relig, n = 10)) %>%
+  count(relig, sort = TRUE) %>%
+  print(n = Inf)
+```
+
+# CH-Data and Times
+
+Task-1:Loading library
+```{r}
+library(tidyverse)
+
+library(lubridate)
+library(nycflights13)
+```
+
+## Creating dates/times
+Task-1: Printing  current date or date-time
+```{r}
+today()
+now()
+```
+## Form strings
+Task-2:converting date strings to date objects in different formats.
+```{r}
+ymd("2017-01-31")
+mdy("January 31st, 2017")
+dmy("31-Jan-2017")
+```
+```{r}
+ymd(20170131)
+```
+
+```{r}
+ymd_hms("2017-01-31 20:11:59")
+mdy_hm("01/31/2017 08:01")
+```
+
+
+```{r}
+flights %>% 
+  select(year, month, day, hour, minute)
+flights %>% 
+  select(year, month, day, hour, minute) %>% 
+  mutate(departure = make_datetime(year, month, day, hour, minute))
+```
+Task: Creating date-time objects from hour-minute time data in the 'flights' dataset and filtering out rows with missing departure or arrival times
+```{r}
+make_datetime_100 <- function(year, month, day, time) {
+  make_datetime(year, month, day, time %/% 100, time %% 100)
+}
+
+flights_dt <- flights %>% 
+  filter(!is.na(dep_time), !is.na(arr_time)) %>% 
+  mutate(
+    dep_time = make_datetime_100(year, month, day, dep_time),
+    arr_time = make_datetime_100(year, month, day, arr_time),
+    sched_dep_time = make_datetime_100(year, month, day, sched_dep_time),
+    sched_arr_time = make_datetime_100(year, month, day, sched_arr_time)
+  ) %>% 
+  select(origin, dest, ends_with("delay"), ends_with("time"))
+
+flights_dt
+```
+Task: Plotting the frequency of flights over time using departure date-time
+
+```{r}
+flights_dt %>% 
+  ggplot(aes(dep_time)) + 
+  geom_freqpoly(binwidth = 86400) 
+```
+Task: Plotting the frequency of flights over time for a specific period using departure date-time
+
+```{r}
+flights_dt %>% 
+  filter(dep_time < ymd(20130102)) %>% 
+  ggplot(aes(dep_time)) + 
+  geom_freqpoly(binwidth = 600) # 600 s = 10 minutes
+```
+Task: to convert today's date to date-time object
+```{r}
+as_datetime(today())
+
+as_date(now())
+
+as_date(365 * 10 + 2)
+
+```
+Date-time components
+Task: Extracting various components of a date-time object
+```{r}
+datetime <- ymd_hms("2016-07-08 12:34:56")
+year(datetime)
+month(datetime)
+mday(datetime)
+yday(datetime)
+wday(datetime)
+month(datetime, label = TRUE)
+wday(datetime, label = TRUE, abbr = FALSE)
+```
+Task: Plotting the frequency of flights by day of the week
+```{r}
+flights_dt %>% 
+  mutate(wday = wday(dep_time, label = TRUE)) %>% 
+  ggplot(aes(x = wday)) +
+    geom_bar()
+```
+Task: Plotting average delay by minute of departure time
+```{r}
+flights_dt %>% 
+  mutate(minute = minute(dep_time)) %>% 
+  group_by(minute) %>% 
+  summarise(
+    avg_delay = mean(arr_delay, na.rm = TRUE),
+    n = n()) %>% 
+  ggplot(aes(minute, avg_delay)) +
+    geom_line()
+```
+Task: Plotting average delay by minute of scheduled departure time
+
+```{r}
+sched_dep <- flights_dt %>% 
+  mutate(minute = minute(sched_dep_time)) %>% 
+  group_by(minute) %>% 
+  summarise(
+    avg_delay = mean(arr_delay, na.rm = TRUE),
+    n = n())
+
+ggplot(sched_dep, aes(minute, avg_delay)) +
+  geom_line()
+```
+Task: Plotting the number of flights by minute of scheduled departure time
+```{r}
+ggplot(sched_dep, aes(minute, n)) +
+  geom_line()
+```
+Rounding
+Task:Plotting the number of flights by week, rounding to the nearest week
+
+```{r}
+flights_dt %>% 
+  count(week = floor_date(dep_time, "week")) %>% 
+  ggplot(aes(week, n)) +
+    geom_line()
+
+```
+setting compounds
+Task: Setting up a date-time object
+```{r}
+(datetime <- ymd_hms("2016-07-08 12:34:56"))
+year(datetime) <- 2020
+datetime
+month(datetime) <- 01
+datetime
+hour(datetime) <- hour(datetime) + 1
+datetime
+update(datetime, year = 2020, month = 2, mday = 2, hour = 2)
+```
+```{r}
+ymd("2015-02-01") %>% 
+  update(mday = 30)
+ymd("2015-02-01") %>% 
+  update(hour = 400)
+```
+Task: Creating a new variable 'dep_hour' by updating the 'dep_time' to the first day of the year
+
+```{r}
+flights_dt %>% 
+  mutate(dep_hour = update(dep_time, yday = 1)) %>% 
+  ggplot(aes(dep_hour)) +
+    geom_freqpoly(binwidth = 300)
+```
+Time Spans
+Compute the age of a person based on their birthdate and today's date
+```{r}
+h_age <- today() - ymd(19791014)
+h_age
+as.duration(h_age)
+```
+```{r}
+dseconds(15)
+dminutes(10)
+dhours(c(12, 24))
+ddays(0:5)
+dweeks(3)
+dyears(1)
+```
+```{r}
+2 * dyears(1)
+dyears(1) + dweeks(12) + dhours(15)
+tomorrow <- today() + ddays(1)
+last_year <- today() - dyears(1)
+one_pm <- ymd_hms("2016-03-12 13:00:00", tz = "America/New_York")
+one_pm
+one_pm + ddays(1)
+```
+Periods
+Create period objects representing different time spans and Perform arithmetic operations with period objects
+```{r}
+one_pm
+one_om = days(1)
+```
+```{r}
+seconds(15)
+minutes(10)
+hours(c(12, 24))
+days(7)
+months(1:6)
+weeks(3)
+years(1)
+```
+
+```{r}
+10 * (months(6) + days(1))
+days(50) + hours(25) + minutes(2)
+```
+
+```{r}
+ymd("2016-01-01") + dyears(1)
+ymd("2016-01-01") + years(1)
+one_pm + ddays(1)
+one_pm + days(1)
+```
+
+Filter flights where arrival time is before departure time
+```{r}
+flights_dt %>% 
+  filter(arr_time < dep_time) 
+```
+
+Update flights data to correct overnight flights
+```{r}
+flights_dt <- flights_dt %>% 
+  mutate(
+    overnight = arr_time < dep_time,
+    arr_time = arr_time + days(overnight * 1),
+    sched_arr_time = sched_arr_time + days(overnight * 1)
+  )
+```
+
+Filter flights where overnight condition is true and arrival time is before departure time
+```{r}
+flights_dt %>% 
+  filter(overnight, arr_time < dep_time) 
+```
+
+Intervals
+Calculate the ratio of one year in days
+```{r}
+years(1) / days(1)
+next_year <- today() + years(1)
+(today() %--% next_year) / ddays(1)
+(today() %--% next_year) %/% days(1)
+```
+
+Display time zone information
+```{r}
+Sys.timezone()
+length(OlsonNames())
+head(OlsonNames())
+```
+```{r}
+(x1 <- ymd_hms("2015-06-01 12:00:00", tz = "America/New_York"))
+(x2 <- ymd_hms("2015-06-01 18:00:00", tz = "Europe/Copenhagen"))
+(x3 <- ymd_hms("2015-06-02 04:00:00", tz = "Pacific/Auckland"))
+```
+```{r}
+x1 - x2
+x1 - x3
+```
+# Pipes
+
+Task: To import the required library
+```{r}
+packages_to_install <- c("tidyverse", "pryr")
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+  library(package_name, character.only = TRUE)
+}
+
+library(magrittr)
+```
+
+Create diamond data and calculate the object sizes
+```{r}
+diamonds <- ggplot2::diamonds
+diamonds2 <- diamonds %>% 
+  dplyr::mutate(price_per_carat = price / carat)
+
+pryr::object_size(diamonds)
+pryr::object_size(diamonds2)
+pryr::object_size(diamonds, diamonds2)
+```
+Functions
+Normalize the columns of a data frame
+```{r}
+df <- tibble::tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+df$a <- (df$a - min(df$a, na.rm = TRUE)) / 
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$b <- (df$b - min(df$b, na.rm = TRUE)) / 
+  (max(df$b, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$c <- (df$c - min(df$c, na.rm = TRUE)) / 
+  (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) / 
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+```
+Normalize a single column of a data frame
+```{r}
+(df$a - min(df$a, na.rm = TRUE)) /
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+```
+```{r}
+x <- df$a
+(x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+```
+```{r}
+rng <- range(x, na.rm = TRUE)
+(x - rng[1]) / (rng[2] - rng[1])
+```
+```{r}
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+rescale01(c(0, 5, 10))
+```
+
+Rescale a vector to the range [0, 1]
+```{r}
+rescale01(c(-10, 0, 10))
+rescale01(c(1, 2, 3, NA, 5))
+```
+
+Rescale each column of a DataFrame to the range [0, 1]
+```{r}
+df$a <- rescale01(df$a)
+df$b <- rescale01(df$b)
+df$c <- rescale01(df$c)
+df$d <- rescale01(df$d)
+```
+```{r}
+x <- c(1:10, Inf)
+rescale01(x)
+```
+
+Define the rescale01 function and apply it
+```{r}
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE, finite = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+rescale01(x)
+```
+
+Load required libraries and packages
+```{r}
+library(tidyverse)
+library(purrr)
+library(magrittr)
+
+# install.packages("pryr")
+library(pryr)
+```
+
+## 18.2 Piping alternatives
+This is a popular Children’s poem that is accompanied by hand actions.We’ll start by defining an object to represent little bunny Foo Foo:
+
+```{r 18.2-1}
+# foo_foo <- little_bunny()
+```
+### 18.2.1 Intermediate steps
+The simplest approach is to save each step as a new object:
+
+```{r 18.2.1-1}
+# foo_foo_1 <- hop(foo_foo,through=forest)
+# foo_foo_2 <- scoop(foo_foo_1, up = field_mice)
+# foo_foo_3 <- bop(foo_foo_2, on = head)
+```
+
+Create diamonds dataset and calculate price per carat
+```{r 18.2.1-2}
+diamonds <- ggplot2::diamonds
+diamonds2 <- diamonds %>% 
+  dplyr::mutate(price_per_carat=price/carat)
+
+pryr::object_size(diamonds)
+pryr::object_size(diamonds2)
+pryr::object_size(diamonds,diamonds2)
+```
+
+Introduce NA value into diamonds$carat and check object sizes
+```{r 18.2.1-3}
+diamonds$carat[1] <- NA
+pryr::object_size(diamonds)
+pryr::object_size(diamonds2)
+pryr::object_size(diamonds,diamonds2)
+```
+
+### 18.2.2 Overwrite the original
+Instead of creating intermediate objects at each step, we could overwrite the original object:
+```{r 18.2.2-1}
+# foo_foo <- hop(foo_foo, through = forest)
+# foo_foo <- scoop(foo_foo, up = field_mice)
+# foo_foo <- bop(foo_foo, on = head)
+```
+### 18.2.3 Function composition
+Another approach is to abandon assignment and just string the function calls together:
+```{r 18.2.3-1}
+# bop(
+#   scoop(
+#     hop(foo_foo, through = forest),
+#     up = field_mice
+#   ), 
+#   on = head
+# )
+```
+
+Here the disadvantage is that you have to read from inside-out, from right-to-left, and that the arguments end up spread far apart (evocatively called the dagwood sandwhich problem). In short, this code is hard for a human to consume.
+
+### 18.2.4 Use the pipe
+Finally, we can use the pipe:
+```{r 18.2.4-1}
+# foo_foo %>%
+#   hop(through = forest) %>%
+#   scoop(up = field_mice) %>%
+#   bop(on = head)
+```
+
+```{r 18.2.4-2}
+# my_pipe <- function(.) {
+#   . <- hop(., through = forest)
+#   . <- scoop(., up = field_mice)
+#   bop(., on = head)
+# }
+# my_pipe(foo_foo)
+```
+TASK:  Functions that use the current environment. For example, `assign()` will create a new variable with the given name in the current environment:
+```{r 18.2.4-3}
+assign("x",10)
+x
+
+"x" %>% assign(100)
+x
+```
+Assign value to "x" in the specified environment and check its value and Generate random numbers, create a matrix, plot it, and inspect its structure
+```{r 18.2.4-4}
+env <- environment()
+"x" %>% assign(100,envir=env)
+x
+```
+```{r 18.4-1}
+rnorm(100) %>% 
+  matrix(ncol=2) %>% 
+  plot() %>% 
+  str()
+
+rnorm(100) %>% 
+  matrix(ncol=2) %>% 
+  plot() %>% 
+  str()
+
+ndist <- rnorm(100000)
+hist(ndist)
+```
+
+Calculate the correlation between two variables in mtcars dataset
+```{r 18.4-2}
+mtcars %$%
+  cor(disp, mpg)
+```
+
+- For assignment magrittr provides the `%<>%` operator which allows you to replace code like:
+```{r 18.4-3}
+mtcars <- mtcars %>% 
+  transform(cyl=cyl*2)
+```
+
+
+```{r 18.4-4}
+mtcars %<>% transform(cyl=cyl*2)
+```
+# Chapter 19 Functions
+## 19.1 Introduction
+
+## 19.2 When should you write a function?
+```{r 19.2-1}
+df <- tibble::tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+df
+
+df$a <- (df$a - min(df$a, na.rm = TRUE)) / 
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$b <- (df$b - min(df$b, na.rm = TRUE)) / 
+  (max(df$b, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$c <- (df$c - min(df$c, na.rm = TRUE)) / 
+  (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) / 
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+```
+
+Rescale a single variable in a data frame
+```{r 19.2-2}
+(df$a - min(df$a, na.rm = TRUE)) /
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+```
+
+Rescale a single variable without creating a new object
+```{r}
+x <- df$a
+(x - min(x, na.rm = T)) / (max(x, na.rm = T)-min(x, na.rm = T))
+```
+
+Task: There is some duplication in this code. We’re computing the range of the data three times, so it makes sense to do it in one step:
+```{r}
+rng <- range(x, na.rm = T)
+(x-rng[1])/(rng[2]-rng[1])
+```
+
+Pulling out intermediate calculations into named variables is a good practice because it makes it more clear what the code is doing. Now that I’ve simplified the code, and checked that it still works, I can turn it into a function:
+```{r 19.2-5}
+rescale01 <- function(x){
+  rng <- range(x, na.rm = T)
+  (x-rng[1])/(rng[2]-rng[1])
+}
+rescale01(c(0,5,10))
+```
+
+Test the rescale01 function with various inputs
+```{r 19.2-6}
+rescale01(c(-10,0,10))
+rescale01(c(1,2,3,NA,5))
+```
+
+We can simplify the original example now that we have a function:
+```{r 19.2-7}
+df$a <- rescale01(df$a)
+df$b <- rescale01(df$b)
+df$c <- rescale01(df$c)
+df$d <- rescale01(df$d)
+```
+
+Rescale a vector with infinite values
+```{r 19.2-8}
+x <- c(1:10,Inf)
+rescale01(x)
+```
+
+Because we’ve extracted the code into a function, we only need to make the fix in one place:
+```{r 19.2-9}
+rescale01 <- function(x){
+  rng <- range(x,na.rm=T,finite=T)
+  (x-rng[1])/(rng[2]-rng[1])
+}
+rescale01(x)
+```
+
+## 19.4 Conditional execution
+An `if` statement allows you to conditionally execute code. 
+It looks like this:
+```{r}
+# if (condition) {
+  # code executed when condition is TRUE
+# } else {
+  # code executed when condition is FALSE
+# }
+```
+
+Define a function to check if an object has names
+```{r}
+has_name <- function(x){
+  nms <- names(x)
+  if(is.null(nms)){
+    rep(FALSE,length(x))
+  }else {
+    !is.na(nms) & nms !=""
+  }
+}
+```
+### 19.4.1 Conditions
+how if condition works with warnings
+```{r 19.4.1-1}
+# if (c(TRUE,FALSE)){}
+#> Warning in if (c(TRUE, FALSE)) {: the condition has length > 1 and only the
+#> first element will be used
+#> NULL
+
+# if (NA) {}
+```
+Check if two objects are identical
+```{r}
+identical(0L,0)
+x <- sqrt(2)^2
+x==2
+x-2
+```
+
+### 19.4.2 Multiple conditions
+You can chain multiple if statement together:
+```{r 19.4.2-1}
+# if (this) {
+#   # do that
+# } else if (that) {
+#   # do something else
+# } else {
+#   # 
+# }
+```
+
+```{r 19.4.2-2}
+#> function(x, y, op) {
+#>   switch(op,
+#>     plus = x + y,
+#>     minus = x - y,
+#>     times = x * y,
+#>     divide = x / y,
+#>     stop("Unknown op!")
+#>   )
+#> }
+```
+### 19.4.3 Code style
+
+Good practice for writing if statements
+```{r 19.4.3-1}
+# Good
+# if (y < 0 && debug) {
+#   message("Y is negative")
+# }
+# 
+# if (y == 0) {
+#   log(x)
+# } else {
+#   y ^ x
+# }
+# 
+# # Bad
+# if (y < 0 && debug)
+# message("Y is negative")
+# 
+# if (y == 0) {
+#   log(x)
+# } 
+# else {
+#   y ^ x
+# }
+```
+
+It’s ok to drop the curly braces if you have a very short if statement that can fit on one line: 
+```{r 19.4.3-2}
+y <- 10
+x <- if (y < 20) "Too low" else "Too high"
+```
+
+I recommend this only for very brief `if` statements. Otherwise, the full form is easier to read:
+```{r}
+if (y < 20) {
+  x <- "Too low" 
+} else {
+  x <- "Too high"
+}
+```
+
+## 19.5 Function arguments 
+
+```{r}
+# Compute confidence interval around mean using normal approximation
+mean_ci <- function(x, conf = 0.95) {
+  se <- sd(x) / sqrt(length(x))
+  alpha <- 1 - conf
+  mean(x) + se * qnorm(c(alpha / 2, 1 - alpha / 2))
+}
+
+x <- runif(100)
+mean_ci(x)
+
+mean_ci(x, conf = 0.99)
+
+```
+
+
+### 19.5.1 Choosing names
+### 19.5.2 Cheking values
+```{r}
+wt_mean <- function(x, w) {
+  sum(x * w) / sum(w)
+}
+wt_var <- function(x, w) {
+  mu <- wt_mean(x, w)
+  sum(w * (x - mu) ^ 2) / sum(w)
+}
+wt_sd <- function(x, w) {
+  sqrt(wt_var(x, w))
+}
+```
+
+What happens if x and w are not the same length?
+```{r}
+wt_mean(1:6, 1:3)
+
+```
+
+In this case, because of R’s vector recycling rules, we don’t get an error.
+
+It’s good practice to check important preconditions, and throw an error (with `stop()`), if they are not true:
+```{r}
+wt_mean <- function(x, w) {
+  if (length(x) != length(w)) {
+    stop("`x` and `w` must be the same length", call. = FALSE)
+  }
+  sum(w * x) / sum(w)
+}
+```
+
+```{r}
+wt_mean <- function(x, w, na.rm = FALSE) {
+  if (!is.logical(na.rm)) {
+    stop("`na.rm` must be logical")
+  }
+  if (length(na.rm) != 1) {
+    stop("`na.rm` must be length 1")
+  }
+  if (length(x) != length(w)) {
+    stop("`x` and `w` must be the same length", call. = FALSE)
+  }
+  
+  if (na.rm) {
+    miss <- is.na(x) | is.na(w)
+    x <- x[!miss]
+    w <- w[!miss]
+  }
+  sum(w * x) / sum(w)
+}
+```
+
+This is a lot of extra work for little additional gain. A useful compromise is the built-in `stopifnot()`: it checks that each argument is `TRUE`, and produces a generic error message if not.
+```{r}
+wt_mean <- function(x, w, na.rm = FALSE) {
+  stopifnot(is.logical(na.rm), length(na.rm) == 1)
+  stopifnot(length(x) == length(w))
+  
+  if (na.rm) {
+    miss <- is.na(x) | is.na(w)
+    x <- x[!miss]
+    w <- w[!miss]
+  }
+  sum(w * x) / sum(w)
+}
+```
+### 19.5.3 Dot-dot-dot(...)
+Many functions in R take an arbitrary number of inputs: 
+```{r 19.5.3-1}
+sum(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+stringr::str_c("a", "b", "c", "d", "e", "f")
+```
+
+Define a function to concatenate strings with commas
+```{r 19.5.3-2}
+commas <- function(...) stringr::str_c(..., collapse = ", ")
+commas(letters[1:10])
+
+
+rule <- function(..., pad = "-") {
+  title <- paste0(...)
+  width <- getOption("width") - nchar(title) - 5
+  cat(title, " ", stringr::str_dup(pad, width), "\n", sep = "")
+}
+rule("Important output")
+```
+```{r}
+x <- c(1,2)
+sum(x,na.rm=T)
+```
+
+Define a function 'complicated_function' with conditions to return 0 if 'x' or 'y' is empty
+```{r}
+complicated_function <- function(x,y,z){
+  if (lenth(x)==0 || length(y)==0){
+    return(0)
+  }
+}
+```
+
+Improve readability of if-else blocks by using early return for simple cases
+```{r}
+f <- function() {
+  if (x) {
+    # Do 
+    # something
+    # that
+    # takes
+    # many
+    # lines
+    # to
+    # express
+  } else {
+    # return something short
+  }
+}
+```
+
+But if the first block is very long, by the time you get to the else, you’ve forgotten the condition. One way to rewrite it is to use an early return for the simple case:
+```{r 19.6.1-3}
+f <- function() {
+  if (!x) {
+    return(something_short)
+  }
+
+  # Do 
+  # something
+  # that
+  # takes
+  # many
+  # lines
+  # to
+  # express
+}
+```
+
+This tends to make the code easier to understand, because you don't need quite so much context to understand it.
+
+### 19.6.2 Writing pipeable functions
+Define a function to show the count of missing values in a data frame
+```{r 19.6.2-1}
+show_missing <- function(df){
+  n <- sum(is.na(df))
+  cat("Missing values:",n,"\n",sep="")
+  
+  invisible(df)
+}
+```
+
+If we call it interatively, the `invisible()` means that the input `df` does not get printed out: 
+```{r}
+show_missing(mtcars)
+```
+
+But it's still there, it's not just printed by default:
+```{r}
+x <- show_missing(mtcars)
+class(x)
+dim(x)
+```
+
+And we can still use it in a pipe:
+```{r 19.6.2-4}
+library(magrittr)
+library(tidyverse)
+
+mtcars %>% 
+  show_missing() %>% 
+  mutate(mpg=ifelse(mpg<20,NA,mpg)) %>% 
+  show_missing()
+```
+
+## 19.7 Environment
+Define a function 'f' that takes an argument 'x' and returns the sum of 'x' and 'y'
+```{r 19.7-1}
+f <- function(x){
+  x+y
+}
+```
+Demonstrate how changing the value of 'y' affects the result of calling function 'f'
+```{r 19.7-2}
+y <- 100
+f(10)
+y <- 1000
+f(10)
+```
+Overload the '+' operator to behave differently based on a random condition
+```{r 19.7-3}
+`+` <- function(x, y) {
+  if (runif(1) < 0.1) {
+    sum(x, y)
+  } else {
+    sum(x, y) * 1.1
+  }
+}
+table(replicate(1000, 1 + 2))
+#> 
+#>   3 3.3 
+#> 100 900
+rm(`+`)
+```
+# Chapter 20: Vectors 
+
+### 20.1.1 PRerequisites 
+
+```{r}
+library(tidyverse)
+```
+
+## 20.2 Vector basics 
+Determine the data type of different vectors
+```{r}
+typeof(letters)
+typeof(1:10)
+```
+
+Determine the length of a list and display its contents
+```{r}
+x <- list("a","b",1:10)
+length(x)
+x
+```
+Demonstrate modulo operation and creation of logical vectors
+```{r}
+1:10 %% 3 ==0
+c(T,T,F,NA)
+```
+
+### 20.3.2 Numeric
+Integer and double vectors are known collectively as numeric vectors. In R, numbers are doubles by default. To make an integer, place an L after the number:
+```{r 20.3.2-1}
+typeof(1)
+typeof(1L)
+1.5
+```
+Demonstrate the behavior of floating point arithmetic
+```{r 20.3.2-2}
+x <- sqrt(2)^2
+x
+x-2
+
+```
+Demonstrate the behavior of division by zero
+```{r 20.3.2-3}
+c(-1,0,1)%/% 0
+# [1] -Inf  NaN  Inf
+```
+
+
+
+### 20.3.3 Character
+Determine the memory size of a string and a replicated string vector
+```{r 20.3.3}
+x <- "This is a reasonably long string."
+pryr::object_size(x)
+
+y <- rep(x,1000)
+pryr::object_size(y)
+```
+
+
+### 20.3.4 Missing values
+Note that each type of atomic vector has its own missing value:
+```{r}
+NA            # logical
+
+NA_integer_   # integer
+
+NA_real_      # double
+
+NA_character_ # character
+
+```
+Calculate the number and proportion of elements in a vector greater than 10
+```{r 20.4.1-1}
+x <- sample(20,100,replace=T)
+y <- x > 10
+sum(y) # how many are greater than 10?
+mean(y) # what proportion are greater than 10?
+```
+```{r 20.4.1-2}
+if (length(x)){
+}
+```
+Determine the data type of different vectors
+```{r 20.4.1-3}
+typeof(c(TRUE,1L))
+typeof(c(1L,1.5))
+typeof(c(1.5,"a"))
+```
+Generate random numeric or logical vectors
+```{r}
+sample(10)+100
+runif(10)>0.5
+```
+Demonstrate vector arithmetic with vectors of different lengths
+```{r}
+1:10 +1:2
+```
+
+```{r}
+1:10+1:3
+```
+Create a tibble with two columns, 'x' and 'y', with different lengths
+```{r}
+library(tidyverse)
+
+
+
+tibble(
+  x=1:4,
+  y=rep(1:2,each=2)
+)
+```
+
+#### 20.4.4 Naming vectors
+All types of vectors can be named. You can name them during creatin with `c()`:
+```{r}
+c(x=1,y=2,z=4)
+```
+
+Or after the fact with `purr::set_names()`
+```{r}
+set_names(1:3,c("a","b","c"))
+```
+
+Named vectors are most useful for subsetting, described next.
+
+### 20.4.5 Subsetting
+Demonstrate subsetting vectors with integer indices
+```{r}
+x <- c("one","two","three","four","five")
+x[c(3,2,5)]
+```
+
+By repeating a position, you can actually make a longer output than input:
+```{r}
+x[c(1,1,5,5,5,2)]
+```
+
+Negative values drop the elements at the specified positions:
+```{r}
+x[c(-1,-3,-5)]
+```
+The error message mentions subsetting with zero, which returns no values:
+```{r}
+x[0]
+```
+```{r}
+library(tidyverse)
+x <- c(10,3,NA,5,8,1)
+
+# tibble test
+x <- as.tibble(x,ncol=1)
+names(x)="v1"
+is.na(x)
+x %>% filter(v1 == NA)
+
+# all non-missing values of x
+x <- c(10,3,NA,5,8,1)
+x[!is.na(x)]
+
+# all even (or missing) values of x
+x[x %% 2==0]
+```
+
+3. If you have a named vector, you can subset it with a character vector:
+```{r}
+x <- c(abc=1, def=2,xyz=5)
+x[c("xyz","def")]
+```
+
+## 20.5 Recursive vectors (lists)
+Create a list with numeric elements
+```{r 20.5-1}
+x <- list(1,2,3)
+x
+```
+Display the structure of lists with and without names
+```{r 20.5-2}
+str(x)
+x_named <- list(a=1,b=2,c=3)
+str(x_named)
+```
+
+Unlike atomic vectors, `list()` can contain a mix of objects:
+```{r 20.5-3}
+y <- list("a",1L,1.5,T)
+str(y)
+```
+
+List can even contain other lists!
+```{r}
+z <- list(list(1,2),list(3,4))
+str(z)
+```
+
+### 20.5.1 Visualizing lists 
+```{r 20.5.1}
+x1 <- list(c(1,2),c(3,4))
+x2 <- list(list(1,2),list(3,4))
+x3 <- list(1,list(2,list(3)))
+x1
+x2
+x3
+```
+### 20.5.2 Subsetting
+Create a list 'a' with named elements and demonstrate subsetting
+```{r}
+a <- list(a = 1:3, b = "a string", c = pi, d = list(-1, -5))
+```
+
+```{r 20.5.2-2}
+str(a)
+str(a[1:2])
+str(a[4])
+```
+Demonstrate subsetting lists using double square brackets
+```{r 20.5.2-3}
+str(a[[1]])
+str(a[[4]])
+```
+Access list elements by name using $ or [[ ]]
+```{r}
+a$a
+a[["a"]]
+```
+## 20.6 Attributes
+Demonstrate setting and retrieving attributes of vectors
+```{r 20.6-1}
+x <- 1:10
+attr(x,"greeting")
+
+attr(x,"greeting") <- "Hi!"
+attr(x,"farewell") <- "Bye!"
+attributes(x)
+```
+Demonstrate methods for class 'Date'
+```{r}
+as.Date
+```
+```{r 20.6-3}
+methods("as.Date")
+```
+Retrieve specific methods for 'as.Date'
+```{r}
+getS3method("as.Date","default")
+getS3method("as.Date","numeric")
+```
+### 20.7.1 Factors 
+Demonstrate creating a factor and inspecting its attributes
+```{r}
+x <- factor(c("ab","cd","ab"),levels=c("ab","cd","ed"))
+typeof(x)
+attributes(x)
+```
+
+### 20.7.2 Dates and date-times
+Dates in R are numeric vectors that represent the number of days since 1 January 1970.
+```{r 20.7.2-1}
+x <- as.Date("1971-01-01")
+unclass(x)
+
+typeof(x)
+attributes(x)
+```
+Demonstrate creating and inspecting a date-time object
+```{r 20.7.2-2}
+x <- lubridate::ymd_hm("1970-01-01 01:00")
+unclass(x)
+
+typeof(x)
+attributes(x)
+```
+Demonstrate setting and retrieving time zone for date-time object
+```{r 20.7.2-3}
+attr(x,"tzone") <- "US/Pacific"
+x
+
+attr(x,"tzone") <- "US/Eastern"
+x
+```
+
+There is another type of date-times called POSIXIt. There are built on top of named lists:
+```{r}
+y <- as.POSIXlt(x)
+typeof(y)
+#> [1] "list"
+attributes(y)
+```
+
+### 20.7.3 Tibbles
+Tibbles are augmented lists: they have class “tbl_df” + “tbl” + “data.frame”, and `names` (column) and `row.names` attributes:
+```{r 20.7.3-1}
+tb <- tibble::tibble(x = 1:5, y = 5:1)
+typeof(tb)
+attributes(tb)
+
+```
+```{r 20.7.3-2}
+df <- data.frame(x = 1:5, y = 5:1)
+typeof(df)
+attributes(df)
+```
+# Chapter 21: Iteration
+### 21.1.1 Prerequisites
+```{r}
+library(tidyverse)
+```
+
+## 21.2 For loops
+Imagine we have this simple tibble:
+```{r}
+df <- tibble(
+  a=rnorm(10),
+  b=rnorm(10),
+  c=rnorm(10),
+  d=rnorm(10)
+)
+```
+Calculate the median for each column in a tibble 
+```{r}
+median(df$a)
+median(df$b)
+median(df$c)
+median(df$d)
+```
+Calculate the median for each column in the data frame 'df' using a for loop
+```{r}
+df
+output <- vector("double",ncol(df))
+for (i in seq_along(df)){
+  output[[i]] <- median(df[[i]])
+}
+output <- tibble(output)
+```
+Demonstrate the behavior of seq_along and length functions with an empty vector 'y'
+```{r}
+y <- vector("double", 0)
+seq_along(y)
+#> integer(0)
+1:length(y)
+#> [1] 1 0
+```
+### 21.3.1v Modifying an existing object
+Sometimes, you want to use a for loop to modify an existing object. For example, remember our challenges from functions. We wanted to rescale every column in a data frame:
+```{r}
+library(tidyverse)
+
+df <- tibble(
+  a=rnorm(10),
+  b=rnorm(10),
+  c=rnorm(10),
+  d=rnorm(10)
+)
+
+rescale01 <- function(x){
+  rng <- range(x,na.rm=T)
+  (x-rng[1])/(rng[2]-rng[1])
+}
+
+df$a <- rescale01(df$a)
+df$b <- rescale01(df$b)
+df$c <- rescale01(df$c)
+df$d <- rescale01(df$d)
+
+df
+```
+
+```{r}
+for ( i in seq_along(df)){
+  df[[i]] <- rescale01(df[[i]])
+}
+```
+
+### 21.3.2 Looping patterns
+```{r}
+x
+results <- vector("list",length(x))
+names(results) <- names(x)
+```
+
+Demonstrate looping patterns using a for loop to iterate over a list 'x' and store results in a list 'results'
+```{r}
+for(i in seq_along(x)){
+  name <- names(x)[[i]]
+  value <- x[[i]]
+}
+```
+
+### 21.3.3 Unknown output length
+Create a vector 'output' with unknown length and store results from a for loop in it
+```{r}
+means <- c(0,1,2)
+
+output <- double()
+for (i in seq_along(means)){
+  n <- sample(100,1)
+  output <- c(output,rnorm(n,means[[i]]))
+}
+str(output)
+output
+```
+
+Create a list 'out' with unknown length and store results from a for loop in it
+```{r}
+out <- vector("list",length(means))
+for (i in seq_along(means)){
+  n <- sample(100,1)
+  out[[i]] <- rnorm(n,means[[i]])
+}
+str(out)
+str(unlist(out))
+```
+### 21.3.4 Unknown sequence length
+
+
+A while loop is also more general than a for loop, because you can rewrite any for loop as a while loop, but you can't rewrite every while loop as for loop:
+```{r}
+for (i in seq_along(x)) {
+  # body
+}
+
+# Equivalent to
+i <- 1
+while (i <= length(x)) {
+  # body
+  i <- i + 1 
+}
+
+```
+
+Herhow we could use a while loop to find how many tries it takes to get three heads in a row: 
+```{r}
+flip <- function() sample(c("T", "H"), 1)
+
+flips <- 0
+nheads <- 0
+
+while (nheads < 3) {
+  if (flip() == "H") {
+    nheads <- nheads + 1
+  } else {
+    nheads <- 0
+  }
+  flips <- flips + 1
+}
+flips
+```
+## 21.4 For loops vs. functionals
+Compare for loop and functional approaches for calculating column means in a data frame
+```{r}
+df <- tibble(
+  a=rnorm(10),
+  b=rnorm(10),
+  c=rnorm(10),
+  d=rnorm(10)
+)
+```
+Using for loop
+```{r}
+output <- vector("double",length(df))
+for (i in seq_along(df)){
+  output[[i]] <- mean(df[[i]])
+}
+output
+```
+Using functional approach with a custom function 'col_mean'
+```{r}
+col_mean <- function(df){
+  output <- vector("double",length(df))
+  for (i in seq_along(df)){
+    output[i] <- mean(df[[i]])
+  }
+  output
+}
+```
+Define a function 'col_median' to calculate the median for each column in the data frame 'df'
+```{r}
+col_median <- function(df){
+  output <- vector("double",hh(df))
+  for (i in seq_along(df)){
+    output[i] <- median(df[[i]])
+  }
+  output
+}
+
+col_sd <- function(df){
+  output <- vector("double",length(df))
+  for (i in seq_along(df)){
+    output[i] <- sd(df[[i]])
+  }
+  output
+}
+
+df
+```
+Define functions f1, f2, and f3 for calculating different powers of absolute deviation from the mean
+```{r}
+f1 <- function(x) abs(x-mean(x))^1
+f2 <- function(x) abs(x-mean(x))^2
+f3 <- function(x) abs(x-mean(x))^3
+```
+Define a function 'f' to calculate the absolute deviation from the mean raised to a given power 'i'
+```{r}
+f <- function(x,i) abs(x-mean(x))^i
+```
+Define a function 'col_summary' to apply a summary function 'fun' to each column of the data frame 'df'
+```{r}
+col_summary <- function(df, fun) {
+  out <- vector("double", length(df))
+  for (i in seq_along(df)) {
+    out[i] <- fun(df[[i]])
+  }
+  out
+}
+col_summary(df, median)
+col_summary(df, mean)
+```
+Demonstrate the use of 'map_dbl' from the 'purrr' package to apply a function to each column of the data frame 'df'
+```{r}
+library(purrr)
+head(df)
+
+
+# Reference - for loop()
+output <- vector("double",length(df))
+for (i in seq_along(df)){
+  output[[i]] <- mean(df[[i]])
+}
+output
+
+map_dbl(df,mean)
+map_dbl(df,median)
+map_dbl(df,sd)
+```
+
+```{r}
+df %>% map_dbl(mean)
+df %>% map_dbl(median)
+df %>% map_dbl(sd)
+```
+Demonstrate the use of 'map_dbl' from the 'purrr' package with additional arguments
+```{r}
+map_dbl(df,mean,trim=0.5)
+```
+Demonstrate the use of 'map_int' from the 'purrr' package to apply a function that returns integers to each element of a list
+```{r}
+z <- list(x=1:3,y=4:5)
+z
+
+map_int(z,length)
+```
+
+### 21.5.1 Shortcuts 
+Demonstrate the use of 'safely' from the 'purrr' package to create a safe version of a function
+
+```{r}
+safe_log <- safely(log)
+str(safe_log(10))
+str(safe_log("a"))
+```
+Demonstrate the use of 'map' from the 'purrr' package with 'safely' to apply a safe version of a function to each element of a list
+
+```{r}
+x <- list(1,10,"a")
+y <- x %>% map(safely(log))
+str(y)
+
+```
+Demonstrate the use of 'transpose' from the 'purrr' package to transpose a list of lists
+```{r}
+y <- x %>% transpose()
+str(y)
+```
+Demonstrate the use of error handling with 'map_lgl' and 'is_null' from the 'purrr' package
+```{r}
+is_ok <- y$error %>% map_lgl(is_null)
+x[!is_ok]
+# y$result[is_ok] %>% flatten_dbl()
+```
+
+Purrr provides two other useful adverbs:
+```{r}
+x <- list(1,10,"a")
+x %>% map_dbl(possibly(log,NA_real_))
+```
+Demonstrate the use of 'quietly' from the 'purrr' package to suppress errors and return results with warnings
+```{r}
+x <- list(1,-1)
+x %>% map(quietly(log)) %>% str()
+```
+
+
+## 21.7 Mapping over multiple arguments 
+Generate random numbers from normal distributions with different means using 'map' from the 'purrr' package
+```{r}
+mu <- list(5,10,-3)
+mu %>% 
+  map(rnorm,n=5) %>% 
+  str()
+```
+Generate random numbers from normal distributions with different means and standard deviations using 'map2' from the 'purrr' package
+```{r}
+sigma <- list(1,5,10)
+seq_along(mu) %>% 
+  map(~rnorm(5,mu[[.]],sigma[[.]])) %>% 
+  str()
+```
+Define a custom 'map2' function to apply a binary function to corresponding elements of two lists
+```{r}
+map2(mu,sigma,rnorm,n=5) %>% str()
+```
+
+```{r}
+map2 <- function(x,y,f,...){
+  out <- vector("list",length(x))
+  for (i in seq_along(x)){
+    out[[i]] <- f(x[[i]],y[[i]],...)
+  }
+  out
+}
+```
+Apply a function to corresponding elements of multiple lists using 'pmap' from the 'purrr' package
+```{r}
+
+library(magrittr)
+library(purrr)
+
+n <- list(1,3,5)
+args1 <- list(n,mu,sigma)
+args1 %>% 
+  pmap(rnorm) %>% 
+  str()
+```
+Apply a function to corresponding elements of multiple lists with named parameters using 'pmap' from the 'purrr' package
+```{r}
+args2 <- list(mean=mu, sd=sigma,n=n)
+args2 %>% 
+  pmap(rnorm) %>% 
+  str()
+```
+Apply a function to corresponding rows of a data frame using 'pmap' from the 'purrr' package with a tibble
+```{r}
+library(tidyverse)
+parms <- tribble(
+  ~mean,~sd,~n,
+  5,1,1,
+  10,5,3,
+  -3,10,5
+)
+
+parms %>% 
+  pmap(rnorm)
+```
+### 21.7.1 Involing different functions
+Invoke different functions with different parameters using 'invoke_map' from the 'purrr' package
+```{r}
+f <- c("runif","rnorm","rpois")
+param <- list(
+  list(min=-1,max=1),
+  list(sd=5),
+  list(lambda=10)
+)
+
+f
+param
+```
+
+To handle this case, you can use `invoke_map()`:
+```{r}
+invoke_map(f,param,n=5) %>% 
+  str()
+```
+Invoke different functions with different parameters using 'pmap' from the 'purrr' package and a tibble
+```{r}
+sim <- tribble(
+  ~f,      ~params,
+  "runif", list(min = -1, max = 1),
+  "rnorm", list(sd = 5),
+  "rpois", list(lambda = 10)
+)
+sim %>% 
+  mutate(sim = invoke_map(f, params, n = 10))
+```
+
+## 21.8 Walk
+Perform side effects without returning a value for each element of a list using 'walk' from the 'purrr' package
+```{r}
+x <- list(1,"a",3)
+x %>% 
+  walk(print)
+```
+Perform side effects on each element of a list using 'walk' from the 'purrr' package, then save the results
+```{r}
+library(ggplot2)
+plots <- mtcars %>% 
+  split(.$cyl) %>% 
+  map(~ggplot(., aes(mpg, wt)) + geom_point())
+paths <- stringr::str_c(names(plots), ".pdf")
+
+pwalk(list(paths, plots), ggsave, path = tempdir())
+```
+Retain or remove elements of a list based on a predicate function using 'keep' and 'discard' from the 'purrr' package
+```{r}
+iris %>% 
+  keep(is.factor) %>% 
+  str()
+
+iris %>% 
+  discard(is.factor) %>%
+  str()
+```
+
+
+
+```{r}
+library(tidyverse)
+library(magrittr)
+
+
+```
+
+### 21.9.2 Reduce and accumulate
+Iteratively combine elements of a list using a binary function with 'reduce' from the 'purrr' package
+```{r}
+dfs <- list(
+  age=tibble(name="John",age=30),
+  sex=tibble(name=c("John","Mary"),sex=c("M","F")),
+  trt=tibble(name="Mary",treatment="A")
+)
+
+dfs %>% reduce(full_join)
+```
+Find the intersection of multiple vectors using 'reduce' from the 'purrr' package
+```{r}
+vs <- list(
+  c(1,3,5,6,10),
+  c(1,2,3,7,8,10),
+  c(1,2,3,4,8,9,10)
+)
+vs %>% reduce(intersect)
+```
+Iteratively apply a function to elements of a list using 'accumulate' from the 'purrr' package
+```{r}
+x <- sample(10)
+x
+x %>% accumulate(`+`)
+```
+

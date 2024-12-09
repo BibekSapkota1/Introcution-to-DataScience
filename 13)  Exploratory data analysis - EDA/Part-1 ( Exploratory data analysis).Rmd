@@ -1,0 +1,231 @@
+---
+title: "EDA (lab-10 / Part-1)"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Exploratory data analysis 
+
+## Importing csv files 
+```{r}
+MS_county_stops <- read.csv('MS_county_stops.csv') 
+MS_traffic_stops <- read.csv('MS_trafficstops_bw_age.csv') 
+```
+
+## Summarizing the data
+```{r}
+str(MS_county_stops) 
+```
+```{r}
+summary(MS_county_stops) 
+```
+
+## Plotting with ggplot2 
+
+task 1: importing the library
+```{r}
+library(ggplot2)
+library(tidyverse)
+```
+
+task 2: Ploting the data of ms_country_stops dataset.
+```{r}
+ggplot(data = MS_county_stops, aes(x = male, y = female)) + geom_point()
+```
+```{r}
+MS_county_stops %>% ggplot(aes(x = male, y = female)) + geom_point()
+```
+
+task 3: Assign plot to a variable and drawing data with datapoints and ploting it using lines
+```{r}
+MS_plot <- ggplot(data = MS_county_stops, aes(x = male, y = female)) 
+MS_plot + geom_point() 
+MS_plot + geom_line() 
+```
+
+### Scatter plot 
+
+task 1:
+```{r}
+ggplot(data = MS_county_stops, aes(x = male, y = female)) + geom_point(alpha= 0.3) 
+```
+
+task 2: Adding blue color to the plot
+```{r}
+ggplot(data = MS_county_stops, aes(x = male, y = female)) + geom_point(alpha= 0.3, color= "blue")
+```
+
+task 3:Adding another line graph in data plot.
+```{r}
+ggplot(data = MS_county_stops, aes(x = male, y = female)) + geom_point(alpha= 0.3, color= "blue")+ geom_abline() 
+```
+
+###  Boxplot
+
+task 1:Ploting box plot of Ms_traffic_stops dataset
+```{r}
+boxplot(driver_age~violation, data = MS_traffic_stops) 
+```
+
+task 2:Rotating the x axis text
+```{r}
+boxplot(driver_age~violation, data = MS_traffic_stops, las = 2) 
+```
+
+task 3:Drawing boxplots using the ggplot function.  
+```{r}
+ggplot(MS_traffic_stops, aes(x = violation, y = driver_age)) + geom_boxplot()
+```
+
+task 4:Filtering the missing values of driver age and Drawing boxplot
+```{r}
+filtered_MS_traffic_stops <- MS_traffic_stops %>% filter(!is.na(driver_age)) 
+ggplot(filtered_MS_traffic_stops, aes(x = violation, y = driver_age)) + geom_boxplot() 
+```
+
+task 5:Filtering Yazoo country and removing its null values
+```{r}
+Yazoo_stops <- MS_traffic_stops %>% filter(county_name == "Yazoo County", !is.na(driver_age))
+```
+
+task 6:Using ggplot we can draw boxplots with data points on it.
+```{r}
+ggplot(Yazoo_stops, aes(x = violation, y = driver_age)) + geom_boxplot() + geom_point() 
+```
+
+task 7:
+```{r}
+ggplot(Yazoo_stops, aes(x = violation, y = driver_age)) + geom_boxplot() + geom_jitter() 
+```
+
+task 8:Coloring the noise
+```{r}
+ggplot(Yazoo_stops, aes(x = violation, y = driver_age)) + geom_boxplot() + geom_jitter(alpha = 0.5, color = "tomato")
+```
+
+task 9:
+```{r}
+ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) + geom_jitter(alpha = 0.5, color = "tomato") + geom_boxplot()
+```
+
+task 10:
+```{r}
+ggplot(data = Yazoo_stops, aes(x = violation, y = driver_age)) + geom_jitter(alpha = 0.5, color = "tomato") + geom_boxplot(alpha = 0) 
+```
+
+### Histograms 
+
+task 1:Ploting a hist driagram of driver age
+```{r}
+hist(MS_traffic_stops$driver_age,col="gold")
+```
+
+task 2:Drawing a histogram using the “ggplot” function.  
+```{r}
+ggplot(MS_traffic_stops, aes(driver_age)) + geom_histogram()
+```
+
+task 3:
+```{r}
+ggplot(MS_traffic_stops, aes(driver_age)) + geom_histogram(col="red", fill="green", alpha=0.2)
+```
+
+task 4:Define bin count and Use break sequence with lower bound, upper bound and bin range 
+```{r}
+ggplot(MS_traffic_stops, aes(driver_age)) + geom_histogram(col="red", fill="green", alpha=0.2, bins=20) 
+ 
+ggplot(MS_traffic_stops, aes(driver_age)) + geom_histogram(col="red", fill="green", alpha=0.2, breaks=seq(10, 50, by=2)) 
+```
+
+task 5:Adding titles and x and y label
+```{r}
+ggplot(MS_traffic_stops, aes(driver_age)) + geom_histogram(col="red", fill="green", alpha=0.2, breaks=seq(10, 50, by=2)) + labs(title="Histogram forAge", x="Age", y="Count") 
+```
+
+task 6: Following code segment count values from the y-axis low values should be in  green and that the higher values should appear in red. 
+```{r}
+ggplot(MS_traffic_stops, aes(driver_age)) + geom_histogram(alpha=0.2, breaks=seq(10, 50, by=2), col="red", aes(fill=..count..)) + scale_fill_gradient("Count", low="green", high="red") 
+```
+
+### Bar charts / Bar plots 
+
+task 1:Display the frequency of each category and Draw bar chart
+```{r}
+table(MS_traffic_stops$violation) 
+
+barplot(table(MS_traffic_stops$violation),col = "red", main="Number of violations") 
+```
+
+task 2:
+```{r}
+ggplot(MS_traffic_stops, aes(violation)) + geom_bar()
+```
+
+task 3:colouring the bars, we will use fill, instead of colour
+```{r}
+ggplot(MS_traffic_stops, aes(violation)) + geom_bar(fill = "green")
+```
+
+task 4:Mapping the values to different colours. 
+```{r}
+ggplot(MS_traffic_stops, aes(violation)) + geom_bar(aes(fill = driver_gender)) 
+```
+
+task 5:stretch the bars between 0 and 1, by setting the position parameter to ‘fill’. 
+```{r}
+ggplot(MS_traffic_stops, aes(violation)) + geom_bar(aes(fill = driver_gender), position = "fill") 
+```
+
+task 6:Adding another function “coord_flip()”. In some scenarios, flipping will make the plot more readable. 
+```{r}
+ggplot(MS_traffic_stops, aes(violation)) + geom_bar(aes(fill = driver_gender), position = "fill") + coord_flip() 
+```
+
+
+## Correlation Analysis 
+
+
+```{r}
+# Load movies data set 
+movies <- read.csv('movies.csv') 
+```
+
+### Graphical Analysis 
+
+```{r}
+ggplot(data = movies, aes(x=revenue, y=budget)) + geom_point(alpha= 0.3, color=  "blue")+ geom_abline()
+```
+
+###  Quantitative Analysis 
+
+```{r}
+cor(movies$vote_average, movies$revenue) 
+```
+
+### Correlation Matrix 
+
+task 1:Loading library
+```{r}
+#install.packages("GGally")
+
+library(GGally) 
+```
+
+task 2L Displaying the heatmap
+```{r}
+ggcorr(movies, label= TRUE , label_alpha= 0.3) 
+```
+
+###  pairwise correlation 
+```{r}
+ggplot(data = movies, aes(x = revenue, y = vote_count)) + geom_point(alpha= 
+0.3, color= "blue") 
+```
+
+```{r}
+qplot(movies$revenue, movies$vote_count, data=movies , geom= c("point", 
+"smooth" ), method= "lm", alpha= I (1/5), se= FALSE) 
+```
+

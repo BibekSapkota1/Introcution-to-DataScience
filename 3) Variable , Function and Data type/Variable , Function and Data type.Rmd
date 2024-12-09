@@ -1,0 +1,528 @@
+---
+title: "Data Science Lab 2"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Variables 
+
+task 1: Created variables x and y . Assign the product of x and y to z and Print z.
+```{r}
+x <- 2+5
+y <- 6
+z <- x*y
+z
+```
+
+task 2: Created variables a and b and divide a/b then assign the result to c and Print c.
+```{r}
+a <- 10-7
+b <- 4
+c <- a/b
+c
+```
+# Functions
+
+task 1: Created the variable x and Assign the function (c),"c is a one dimensional array" to x, and print variable x.
+```{r}
+x = c(100,200,300)
+x
+```
+
+# Data Types in R
+
+task 1: Created the variable x and checked the class of x.
+```{r}
+x =5
+class(x)
+```
+
+task 2:Checked the variable x is integer.
+```{r}
+is.integer(x)
+```
+
+
+# Vectors, Matrices, Arrays, Lists and DataFrames
+
+task 1: Created the variable xx and Assign matrix with dimensions with 3rows and 2cols.
+```{r}
+xx = matrix(1:6, nrow=3, ncol =2)
+xx
+```
+
+task 2: Print the class of variable xx.
+```{r}
+class(xx)
+```
+
+task 3:Checked the variable xx is vector or not.
+```{r}
+is.vector(xx)
+```
+
+task 4:checked the variable xx is matrix or not.
+```{r}
+is.matrix(xx)
+```
+
+task 5: Checked the length of variable xx.
+```{r}
+length(xx)
+```
+task 5:Checked the dimension of the variable xx.
+```{r}
+dim(xx)
+```
+
+# Datasets for apply family 
+
+task 1:Imported the dataset of mtcars. Print the head of mtcars which will print 1st 6rows.
+```{r}
+data("mtcars")
+head(mtcars)
+```
+
+# Apply function
+
+task 1: The function max is applied to calculated row wise maximum values.
+```{r}
+apply (t(beaver1),1,max)
+```
+
+task 2: The function mean is applied for each column and mean is calculated.
+```{r}
+apply(mtcars,2,mean)
+```
+
+task 3: Calculate the remainder when each element of the columns in the mtcars dataset is divided by 10 and display the first 6 rows 
+```{r}
+head(apply(mtcars,2,function(x) x%%10))
+```
+
+# lapply function
+
+task 1: Created the one-dimensional vector and assign to movies, then apply movies to lower function using lapply  and checked the structure of each elements and print it.
+```{r}
+movies <- c("SPYDERMAN","BATMAN","VERTIGO","CHINATOWN")
+movies_lower <-lapply(movies, tolower)
+str(movies_lower)
+```
+
+task 2: Converted list into vector using unlist and then Display it.
+```{r}
+movies_lower <-unlist(lapply(movies,tolower))
+str(movies_lower)
+```
+
+# sapply function
+
+task 1: Created a dataset cars that is assign to dt then calculated the minimum value of each column in the cars dataset using both lapply (resulting in a list) and sapply (resulting in a simplified vector), and then displays the list of minimum values.
+```{r}
+dt <- cars
+lmn_cars <- lapply(dt, min)
+smn_cars <- sapply(dt, min)
+lmn_cars
+```
+
+task 2: Displays the list of minimum values that has used sapply .
+```{r}
+smn_cars
+```
+
+task 3: The code calculates the maximum value of each column in the cars dataset using both 'lapply' (resulting in a list) and 'sapply' (resulting in a simplified vector), and then displays the list of maximum values.
+```{r}
+lmxcars <- lapply(dt, max)
+smxcars <- sapply(dt, max)
+lmxcars
+smxcars
+```
+
+task 4:The 'avg' that calculates the average of the minimum and maximum values in a vector(x) and applies this function to each column of the dataset using 'sapply', and then displays the resulting vector of averages.
+```{r}
+avg <- function(x) {
+( min(x) + max(x) ) / 2}
+fcars <- sapply(dt, avg)
+fcars
+```
+
+# Saving and Loading Data 
+
+task 1:Creates a data frame named 'EU' containing columns for European country names and their corresponding populations and Displaying it.
+```{r}
+EUCountryNames = c("United Kingdom", "Germany","France","Italy")
+EUPopulation = c(63843856, 82562004,64982894,61142221)
+EU = data.frame(EUCountryNames,EUPopulation)
+EU
+```
+
+task 2: Store the data on disk in the native R format RData.
+```{r}
+save(EU,file = "EUInfo.RData")
+```
+
+
+task 3:It shows absolute filepath representing the current working directory of the R process
+```{r}
+getwd()
+```
+task 4:Removed the created data frame and then load the one we have from the disk.
+```{r}
+rm(EU)
+load("EUInfo.RData")
+EU
+```
+
+task 5:It code saves the dataframe EU to a CSV file named "EUInfo.csv".
+```{r}
+write.csv(EU,"EUInfo.csv")
+```
+
+task 6:It reads the CSV file "EUInfo.csv" into a new data frame named 'EU2' and then displays its contents.
+```{r}
+EU2 = read.csv("EUInfo.csv")
+EU2
+```
+
+task 7:Installing the packages "xlsx"
+```{r}
+# install.packages("xlsx")
+```
+
+task 8:Load the package "xlsx"
+```{r}
+library(xlsx)
+```
+
+task 9:It saves the dataframe EU to an Excel file named "EUInfoNew.xlsx" with the sheet name "Sheet1" using the write.xlsx() function from the "xlsx" package.
+```{r}
+write.xlsx(EU,"EUInfoNew.xlsx",sheetName="Sheet1")
+```
+
+task 10:It reads the Excel file "EUInfoNew.xlsx" from the sheet named "Sheet1" into a new data frame named EU3 and then displays its contents.
+```{r}
+EU3 = read.xlsx("EUInfoNew.xlsx",sheetName="Sheet1")
+EU3
+```
+
+# Tutorial - 2
+
+task 1: Get random 10 values from normal distribution
+```{r}
+x <- rnorm(10)
+x
+```
+
+task 2: Display value x
+```{r}
+print(x)
+```
+
+task 3:list objects from the session
+```{r}
+ls()
+```
+
+task 4:Remove Object from the session
+```{r}
+rm(x)
+```
+
+task 5:Get 10 values from 1 to 10 and Display it.
+```{r}
+a <- c(1:10)
+print(a)
+```
+
+task 6:Get 10 values from 1 to 10 and Display it.
+```{r}
+b <-1:10
+print(b)
+```
+
+task 7: Create vector using : operator
+```{r}
+x <- c(1, 5, 4, 9, 0)
+typeof(x)
+
+length(x)
+x <- c(1, 5.4, TRUE, "hello")
+x
+typeof(x)
+```
+
+task 8:Create vector using seq() function. specify step size and length of the vector
+```{r}
+seq(1, 3, by=0.2) 
+
+seq(1, 5, length.out=4) 
+```
+
+# Accessing an element of vector
+
+task 1:Accessing 3rd element then accessing 2nd and 4th element and accessing all but not 1st element
+```{r}
+x <- 1:7
+
+x[3]    
+
+x[c(2, 4)]     
+
+x[-1]          
+# cannot mix positive and negative integers
+# x[c(2, -4)]
+```
+## Using logical vector as index
+
+task 1: filtering vectors based on conditions. condition will repeat if there is less conditions and more variable
+```{r}
+x <- 1:5
+x[c(TRUE, FALSE, FALSE, TRUE)]
+
+x[x < 0] 
+x[x > 0]
+```
+## Using Character vector as index
+```{r}
+x <- c("first"=3, "second"=0, "third"=9)
+names(x)
+x["second"]
+```
+# Create 
+
+task 1:Create a list of strings
+```{r}
+list_size <- list("small", "medium", "big")
+print(list_size)
+```
+
+task 2:Create x and y vector
+```{r}
+x <- as.numeric(1:30)
+y <- x ^ 3
+```
+
+task 3:Create a dataframe using x and y vector and then viewing a structure of dataframe.
+```{r}
+df <- data.frame(x, y)
+
+str(df)
+```
+
+## Create plot of x and y variables in R Studio and interpret it carefully
+
+task 1:create a plot using R base package
+```{r}
+plot(df$x, df$y)
+```
+
+```{r}
+corr <- cor.test(x = df$x, y = df$y, method="spearman")
+corr
+```
+
+task 2:Use log transformation to the x and y variables.
+```{r}
+plot(log(df$x), log(df$y))
+```
+
+```{r}
+corr <- cor.test(x = log(df$x), y = log(df$y), method="pearson")
+corr
+```
+
+# R Matrix
+
+task 1: creating the matrix with 3rows and 3 columns
+```{r}
+matrix(1:9, nrow = 3, ncol = 3)
+```
+
+```{r}
+matrix(1:9, nrow = 3)
+```
+
+task 2:fill matrix row-wise
+```{r}
+matrix(1:9, nrow=3, byrow=TRUE)
+```
+
+task 3:Create matrix and then renaming its columns in X,Y,Z and Rows in A,B,C
+```{r}
+x <- matrix(1:9, nrow = 3, dimnames = list(c("X","Y","Z"), c("A","B","C")))
+x
+```
+task 4:access column names and rownames
+```{r}
+colnames(x)
+rownames(x)
+```
+
+task 5:change column and row names
+```{r}
+colnames(x) <- c("C1","C2","C3")
+rownames(x) <- c("R1","R2","R3")
+x
+```
+
+task 6:'cbind' 1st plot column wise and 'rbind' plot row wies
+```{r}
+cbind(c(1,2,3),c(4,5,6))
+rbind(c(1,2,3),c(4,5,6))
+```
+
+task 7:Use dim to create matrix
+```{r}
+x <- c(1,2,3,4,5,6)
+dim(x) <- c(2,3)
+x
+```
+
+```{r}
+x <- c(1,2,3,4,5,6)
+class(x)
+
+dim(x) <- c(2,3)
+x
+class(x)
+```
+
+## Access Elements of Matrix
+
+task 1:Create a matrix with dimension 3x3
+```{r}
+x <- matrix(c(1, 2, 3, 4, 5, 6, 7, 8, 9), nrow = 3, ncol = 3, byrow = TRUE)
+x
+```
+
+task 2:select rows 1 & 2 and columns 2 & 3
+```{r}
+x[c(1,2),c(2,3)]
+```
+
+task 3:leaving column field blank will select entire columns
+```{r}
+x[c(3,2),] 
+```
+
+task 4:leaving row as well as column field blank will select entire matrix
+```{r}
+x[,]  
+```
+
+task 5:select all rows except first
+```{r}
+x[-1,]  
+```
+
+# Lists
+```{r}
+x <- list("a" = 2.5, "b" = TRUE, "c" = 1:3)
+x
+```
+
+```{r}
+str(x)
+```
+
+## Accessing the list components
+
+task 1:Create a list and assign to x and Display it
+```{r}
+x <- list(name = "John", age = 19, speaks = c("English", "French"))
+x
+```
+
+task 2:access elements by name
+```{r}
+x$name
+x$age
+x$speaks
+```
+
+task 3:access elements by integer index
+```{r}
+x[c(1, 2)]
+x[-2]
+```
+
+task 4:access elements by logical index
+```{r}
+x[c(TRUE, FALSE, FALSE)]
+```
+
+task 5:access elements by character index
+```{r}
+x[c("age", "speaks")]
+```
+
+task 7:Create a list
+```{r}
+x <- list(name = "John", age = 19, speaks = c("English", "French"))
+x
+```
+
+task 8:access element by name using single bracket []
+```{r}
+x["age"]
+```
+
+task 9:check the type of the result (single bracket returns a list)
+```{r}
+typeof(x["age"])
+```
+
+task 10:access element by name using double bracket [[]]
+```{r}
+x[["age"]]
+```
+
+task 11:check the type of the result (double bracket returns the content)
+```{r}
+typeof(x[["age"]])
+```
+
+## Add a component in list
+
+task 1:Create a list and display it
+```{r}
+x <- list(name = "Clair", age = 19, speaks = c("English", "French"))
+x
+```
+
+task 2:assign a new element to the list using double brackets [[]] and print the updated list
+```{r}
+x[["married"]] <- FALSE
+x
+```
+
+## Delete a component in list
+
+task 1:Create a list and display it
+```{r}
+x <- list(name = "Clair", age = 19, speaks = c("English", "French"))
+```
+
+task 2:remove an element from the list using double brackets [[]]
+```{r}
+x[["age"]] <- NULL
+x
+```
+
+task 3:print the structure of the updated list
+```{r}
+str(x)
+```
+
+task 4:remove an element from the list using $ notation
+```{r}
+x$married <- NULL
+x
+```
+
+task 5:print the structure of the updated list
+```{r}
+str(x)
+```

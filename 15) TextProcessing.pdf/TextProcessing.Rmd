@@ -1,0 +1,280 @@
+---
+title: "Text Processing (Lab-12)"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# String Manipulation:
+
+## List of String Manipulation Functions 
+
+task 1: Assigning value to virables and then printing its type.
+```{r}
+text <- "san francisco" 
+typeof(text) 
+
+num <- c("24","34","36") 
+typeof(num) 
+```
+
+task 2:Assing value to var3 and printing it.
+```{r}
+var3 <- paste("Var1","Var2",sep = "-") 
+var3 
+```
+task 3: Starting with 1 connect with ? and ! and assigning - sep in middle.
+```{r}
+paste(1:5,c("?","!"),sep = "-") 
+```
+
+task 4:Assiging value to variables then assiging sep in middle.
+```{r}
+text= "England" 
+cat(text,"USA",sep = "-") 
+```
+
+task 5:Assiging sep in middle of month name from 1 Jan to May
+```{r}
+cat(month.name[1:5],sep = " ") 
+```
+
+task 6:Changing 1to10 num into string using tostring.
+```{r}
+toString (1:10) 
+```
+
+task 7:Importing the library
+```{r}
+library(stringr) 
+```
+
+task 8:Assign value to variable
+```{r}
+str <- "Los Angeles, officially the City of Los Angeles and often known by its 
+initials L.A., is the second-most populous city in the United States (after New 
+York City), the most populous city in California and the county seat of Los An 
+geles County. Situated in Southern California, Los Angeles is known for its Medi 
+terranean climate, ethnic diversity, sprawling metropolis, and as a major center 
+of the American entertainment industry." 
+strwrap(str)
+```
+
+task 9:count number of characters 
+```{r}
+nchar(str) 
+str_length(str)
+```
+
+task 10:convert to lower 
+```{r}
+tolower(str)  
+str_to_lower(str) 
+```
+
+task 11:Replace strings 
+```{r}
+chartr("and","for",x = str) #letters a,n,d get replaced by f,o,r 
+str_replace_all(string = str, pattern = c("City"),replacement = "state") #this is case sensitive 
+```
+
+task 12:Extract parts of string 
+```{r}
+substr(x = str,start = 5,stop = 11) 
+```
+
+task 13:Get difference between two vectors 
+```{r}
+setdiff(c("monday","tuesday","wednesday"),c("monday","thursday","friday")) 
+```
+
+task 14:Check if strings are equal 
+```{r}
+setequal(c("monday","tuesday","wednesday"),c("monday","tuesday","wednesday")) 
+setequal(c("monday","tuesday","thursday"),c("monday","tuesday","wednesday")) 
+```
+
+task 15:Abbreviate strings 
+```{r}
+abbreviate(c("monday","tuesday","wednesday"),minlength = 3) 
+```
+
+task 16:spliting strings 
+```{r}
+strsplit(x = c("ID-101","ID-102","ID-103","ID-104"),split = "-") 
+str_split(string = c("ID-101","ID-102","ID-103","ID-104"),pattern = "-",simplify = T) 
+```
+
+task 17:find and replace first match 
+```{r}
+sub(pattern = "L",replacement = "B",x = str,ignore.case = T) 
+```
+
+task 18:find and replace all matches 
+```{r}
+gsub(pattern = "Los",replacement = "Bos",x = str,ignore.case = T) 
+```
+### Question 1:Write a command to extract the first 5 characters of above-given text (string). 
+```{r}
+dt <- c("Soloman", "abcdef", "snakjs")
+first_5_characters <- substr(dt, start = 1, stop = 5)
+print(first_5_characters)
+```
+
+
+## Metacharacters
+
+task 1:
+```{r}
+dt <- c("20","20$") 
+grep(pattern = "20\\$",x = dt,value = T) 
+```
+
+task 2:sub() function to make the replacements. 
+```{r}
+dt <- c("may?","money$","and&") 
+gsub(pattern = "[\\?-\\$-\\&]",replacement = "",x = dt) 
+```
+
+
+task 3: double backslash in a string, you'll need to prefix it with another double backslash to get detected
+```{r}
+gsub(pattern = "\\\\",replacement = "-",x = "Barcelona\\Spain") 
+```
+### Question 2: Write a code to capture the first two elements in dt <- c("may?, "money$" but not "and&").
+```{r}
+dt <- c("may?", "money$", "and&")
+result <- grep("^(may\\?|money\\$)$", dt, value = TRUE)
+print(result)
+```
+
+##  Quantifiers 
+
+task 1:Assign value to variable
+```{r}
+names <- c("anna","crissy","puerto","cristian","garcia","steven","alex","rudy")
+```
+
+task 2:The symbol .? is known as a non-greedy quantifier. Being non-greedy, for a particular pattern to be matched, 
+it will stop at the first match.
+```{r}
+#doesn't matter if e is a match 
+grep(pattern = "e*",x = names,value = T) 
+
+#must match t one or more times 
+grep(pattern = "t+",x = names,value = T) 
+
+#must match n two times 
+grep(pattern = "n{2}",x = names,value = T) 
+```
+
+### Question 3:Write a regex pattern to match ‘c’ one or more times. 
+```{r}
+# Use grep to find elements containing 'c' one or more times
+matches <- grep("c+", names, value = TRUE)
+
+# Print the matching names
+print(matches)
+```
+
+## Sequence
+
+task 1:matching a digit 
+```{r}
+str <- "I have been to Paris 20 times" 
+ 
+gsub(pattern = "\\d+",replacement = "_",x = str)
+regmatches(str,regexpr(pattern = "\\d+",text = str)) 
+```
+
+task 2:match a non-digit 
+```{r}
+ 
+gsub(pattern = "\\D+",replacement = "_",x = str)  
+regmatches(str,regexpr(pattern = "\\D+",text = str))
+```
+
+task 3:match a space - returns positions  
+```{r}
+gregexpr(pattern = "\\s+",text = str) 
+```
+
+task 4:match a non space  
+```{r}
+gsub(pattern = "\\S+",replacement = "app",x = str)
+```
+
+task 5:match a word character  
+```{r}
+gsub(pattern = "\\w",replacement = "k",x = str) 
+```
+
+task 6:match a non-word character  
+```{r}
+gsub(pattern = "\\W",replacement = "k",x = str)
+```
+
+## Character Classes 
+
+task 1:extract numbers 
+```{r}
+str <- "20 people got killed in the mob attack. 14 got severely injured" 
+
+regmatches(x = str,gregexpr("[0-9]+",text = str)) 
+```
+
+task 2:extract without digits 
+```{r}
+regmatches(x = str,gregexpr("[^0-9]+",text = str)) 
+```
+
+## Lecture examples: 
+
+task 1:Checks if strings match three characters followed by a period.
+```{r}
+str<- c("cat.", "896.", "?=+.", "abc1") 
+grepl(pattern = "...\\.",x=str) 
+```
+
+task 2:Checks if strings have 'a's, followed by 'b's, ending with 'c's.
+```{r}
+str<- c("aaaabc", "aabbbc", "aacc", "a") 
+grepl(pattern = "a+b*c+",x=str) 
+```
+
+task 3:Checks if strings have 'waz' followed by 3-4 'z's and 'up'.
+```{r}
+str<- c("wazzzzup", "wazzzup", "wazup") 
+grepl(pattern = "waz{3,4}up",x=str) 
+```
+
+task 4:Selects strings with lowercase, optional period, space, uppercase, and digit.
+```{r}
+str<-c("A. B","c! d", "e f", "g. H3", "i? J", "k L") 
+grep(pattern ="[a-z]\\.?\\s+[A-Z]\\d*",x=str) 
+```
+
+
+task 5:Selects strings in mm/dd/yyyy or mm/dd/yy format.
+```{r}
+str<- c("09/01/2016", "09/21/16", "12/25/2016", "12/05/16") 
+grep(pattern ="^([0-2][0-9]|(3)[0-1])(\\/)((0)[0-9]|(1)[0-2])(\\/)\\d{4}$", x=str)
+```
+
+### Question 4:Write a code to match only the first digit in dt <- c("75 to 79", "80 to 84", "85 to 89").
+```{r}
+dt <- c("75 to 79", "80 to 84", "85 to 89")
+first_digits <- gsub(pattern = "(\\d+).*", replacement = "\\1", x = dt)
+print(first_digits)
+```
+
+
+
+
+
+
+
+
+
+

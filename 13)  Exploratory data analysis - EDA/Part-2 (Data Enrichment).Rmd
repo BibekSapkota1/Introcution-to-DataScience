@@ -1,0 +1,112 @@
+---
+title: "Data Enrichment (Lab-10 / Part-2)"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Data Enrichment 
+. 
+## Deduplication 
+
+task1 :Import the library 
+```{r}
+library(tidyverse) 
+```
+
+
+task 2:create a vector of numbers
+```{r}
+x <- c(1, 1, 4, 5, 4, 6) 
+```
+
+task 3: Checking the positions of duplicate elements
+```{r}
+duplicated(x) 
+```
+
+task 4:Extracting duplicate elements 
+```{r}
+x[duplicated(x)]
+```
+
+task 5: remove duplicated elements, use !duplicated(), where ! is a logical negation. 
+```{r}
+
+x[!duplicated(x)] 
+```
+
+task 6:Loading Inbulit iris dataset
+```{r}
+iris[!duplicated(iris$Sepal.Width), ] 
+```
+
+### Remove duplicate rows in a data frame 
+
+task 1: Remove duplicate rows based on all columns:
+```{r}
+iris %>% distinct() 
+```
+
+
+task 2: Remove duplicated rows based on Sepal.Length  
+```{r}
+iris %>% distinct(Sepal.Length, .keep_all = TRUE) 
+```
+
+task 3:Remove duplicated rows based on Sepal.Length and Petal.Width 
+```{r}
+ iris %>% distinct(Sepal.Length, Petal.Width, .keep_all = TRUE) 
+```
+
+## Grouping
+
+
+```{r}
+# First, we have to define which column we are going to use to group. 
+# In this case we use the species of the plant 
+my_group <- group_by(iris, Species) 
+# Now using “summarize_all”, we define which function we use to group the values. 
+# For an example we can use mean.  
+summarize_all(my_group, funs(mean)) 
+```
+
+task 2: Download and load the data set. 
+```{r}
+surveys <- read.csv("survey.csv")
+surveys
+```
+
+task 3:
+```{r}
+surveys %>%  
+group_by(sex) %>%  summarize(mean_weight = mean(wgt, na.rm = TRUE)) 
+```
+
+task 4: group by multiple columns
+```{r}
+surveys %>%  
+group_by(sex, species) %>%  summarize(mean_weight = mean(wgt, na.rm = TRUE))
+```
+
+
+```{r}
+surveys %>%  
+group_by(sex, species) %>%  summarize(mean_weight = mean(wgt, na.rm = TRUE), 
+min_weight = min(wgt, na.rm = TRUE)) 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,282 @@
+---
+title: "R Diamonds Dataset"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  html_notebook: default
+---
+
+# Install and Import ggplot2, factoextra and psych packages
+
+```{r}
+packages_to_install <- c("ggplot2", "factoextra","psych")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(ggplot2)
+library(factoextra)
+library(psych)
+```
+
+# Loading the data into R
+
+```{r}
+data("diamonds")
+```
+
+task 1: Displaying first 6 rows data
+
+```{r}
+head(diamonds)
+```
+
+task 2: Displaying last 6 rows of data
+
+```{r}
+tail(diamonds)
+```
+
+task 3: Displaying more than 6 rows of data
+
+```{r}
+head(diamonds,10)
+```
+
+task 4: Checking the structure of data
+
+```{r}
+str(diamonds)
+```
+
+task 5: Checking the dimension of data
+
+```{r}
+dim(diamonds)
+```
+
+task 6: Summarizing the data
+
+```{r}
+summary(diamonds)
+```
+
+task 7: Describing the data
+
+```{r}
+ describe(diamonds)
+```
+
+# Visualization of diamonds dataset
+
+task 1:Building the histogram of carat
+
+```{r}
+hist(diamonds$carat)
+```
+
+task 2:Using color to color the bin
+
+```{r}
+hist(diamonds$carat, col='aquamarine', ylab = "")
+```
+
+task 3:Changing the label of x-axis
+
+```{r}
+ hist(diamonds$carat, col='aquamarine', xlab = "Carat", ylab= "No of diamons")
+```
+
+task 4: Creating a box plot of all variables in dataset
+
+```{r}
+boxplot(diamonds)
+```
+
+task 5: Creating the box plot of only single variable (say diamonds)
+
+```{r}
+boxplot(diamonds$price)
+```
+
+task 6:Filling in the label on x-axis and y-axis
+
+```{r}
+boxplot(diamonds$price, 
+        xlab="price", 
+        ylab="Values")
+```
+
+task 7:Displaying Boxplot
+
+```{r}
+ boxplot(carat ~ price , data = diamonds,
+ xlab = "price",
+ ylab = "Carat",
+ main = "Boxplot of carat by price")
+```
+
+task 8:Plotting the Scatter plot
+
+```{r}
+ plot(diamonds$carat, diamonds$clarity)
+```
+
+task 9: Calculating the distribution of transmissions
+
+```{r}
+trans_dist <- table(diamonds$color)
+```
+
+task 10:Creating pie chart
+
+```{r}
+pie(trans_dist,
+ labels = c("D","E","F", "G","H" , "I", "J"),
+ main = "colors of diamonds")
+```
+
+task 11:Using Scatter plot matrix for Displaying selected variables
+
+```{r}
+pairs(diamonds[, c("carat", "price", "depth", "table")],
+ main = "Scatterplot Matrix")
+```
+
+task 12:Ploting Histogram of carat
+
+```{r}
+ggplot(diamonds, aes(x = carat),) +
+ geom_histogram()
+```
+
+task 13:Using color to color the bin
+
+```{r}
+ggplot(diamonds, aes(x = carat, fill = cut)) +
+  geom_histogram(bins = 30, position = "identity", alpha = 0.5) +
+  theme_minimal() +
+  labs(title = "Distribution of Diamond Carat Sizes by Cut",
+       x = "Carat",
+       y = "Count",
+       fill = "Cut")
+```
+
+task 14:Changing the label of x-axis
+
+```{r}
+ggplot(diamonds, aes(x = carat)) +
+ geom_histogram(fill = 'aquamarine', bins = 5) +
+ xlab("")
+```
+
+task 15:Createing the box plot of only single variable
+
+```{r}
+ggplot(diamonds, aes(x= factor('depth'),y=depth)) +
+ geom_boxplot()+
+ ylab("Value") +
+ xlab("depth")
+```
+
+task 16:Box ploting of carat by price
+
+```{r}
+ ggplot(diamonds, aes(x= factor(cut),y=color))+
+ geom_boxplot()+
+ xlab("carat") +
+ ylab("price") +
+ ggtitle("Box plot of carat by price")
+```
+
+task 17: Ploting the Scatter Plot
+
+```{r}
+ ggplot(diamonds, aes(x = carat, y = depth)) +
+ geom_point()
+```
+
+# Applying K-means Clustering
+
+task 1:set random seed
+
+```{r}
+set.seed(7696)
+```
+
+task 2: checking the class and dimension of data
+
+```{r}
+class(diamonds)
+dim(diamonds)
+```
+
+task 3:filter data by column name
+
+```{r}
+filtered_data1= diamonds[, c("price","carat")]
+```
+
+task 4:Visualizing the data
+
+```{r}
+ggplot(diamonds, aes(x= price, y= carat))+ 
+  geom_point()
+```
+
+task 5:Finding 5 clusters using k-means clustering and viewing the details
+
+```{r}
+clusters=kmeans(filtered_data1, 5)
+clusters
+```
+
+task 6: Visulizing the cluster
+
+```{r}
+cluster_index = as.factor(clusters$cluster)
+ggplot(filtered_data1, aes(x=price, y=carat, color= cluster_index )) +
+  geom_point()
+```
+
+```{r}
+fviz_cluster(clusters, data= filtered_data1, geom= c("point"))
+```
+
+task 7:Filtering the data
+
+```{r}
+filtered_data2= diamonds[, c("depth","price","carat")]
+```
+
+task 9:Finding 5 clusters using k-means clustering and viewing the details
+
+```{r}
+cluster2= kmeans(filtered_data2, 5)
+cluster2
+```
+
+
+```{r}
+fviz_cluster(cluster2, data= filtered_data2, geom= c("point"))
+```
+
+
+
+task 11:Finding 5 clusters using k-means clustering and viewing the details
+
+```{r}
+cluster3= kmeans(filtered_data2, 5 , nstart=25)
+cluster3
+```
+
+task 12:Visulizing the cluster
+
+```{r}
+fviz_cluster(cluster3, data= filtered_data2, geom= c("point"))
+```

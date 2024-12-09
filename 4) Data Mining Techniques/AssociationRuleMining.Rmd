@@ -1,0 +1,63 @@
+---
+title: "Association Rule Mining"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+task 1: Install package
+```{r}
+#install.packages("arules")
+library("arules")
+```
+
+task 2:Importing and loading the data.
+```{r}
+dataAR <- read.csv("weather.csv")
+dataAR
+```
+
+task 3: Applying apriori 
+```{r}
+rules <- apriori(dataAR)
+```
+
+task 4: Inspect the dataset
+```{r}
+inspect(rules)
+```
+
+task 5: Using Apriori algorithm mines association rules in dataAR with minimum 30% support and 30% confidence.
+```{r}
+rules <- apriori(dataAR, parameter =list(supp=0.3, conf=0.3) )
+```
+
+task 6:Display detailed information of the mined association rules.
+```{r}
+inspect(rules)
+```
+
+task 7:Finds association rules in dataAR with 30% support, 30% confidence, and minimum length of 2.
+```{r}
+rules <- apriori(dataAR, parameter =list (supp=0.3, conf=0.3, minlen=2 ) )
+```
+
+task 8: installing and loading the package
+```{r}
+#install.packages("arulesViz")
+library("arulesViz")
+```
+
+task 9:Ploting rules
+```{r}
+plot(rules)
+```
+
+task 10:Using alternative graph
+```{r}
+plot(rules, method="graph", control = list(type="items"))
+```
+
+
+

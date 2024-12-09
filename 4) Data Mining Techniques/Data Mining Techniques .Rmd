@@ -1,0 +1,111 @@
+---
+title: "Data Mining Techniques (Lab-3)"
+author: "Bibek Sapkota"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+### Install and Import packages
+```{r}
+packages_to_install <- c("ggplot2", "factoextra")
+
+for (package_name in packages_to_install) {
+  if (!requireNamespace(package_name, quietly = TRUE)) {
+    install.packages(package_name)
+  }
+}
+
+library(ggplot2)
+library(factoextra)
+```
+
+
+task 2:set random seed
+```{r}
+set.seed(7696)
+```
+
+
+task 3:Loading the data
+```{r}
+data = read.csv("Mall_Customers.csv")
+```
+
+```{r}
+class(data)
+```
+
+task 4:filter data by column name
+```{r}
+filtered_data1= data[, c("Annual_Income","Spending_Score")]
+```
+
+task5:Draw a scatter ploy of data
+```{r}
+ggplot(data, aes(x= Annual_Income, y= Spending_Score))+ geom_point()
+```
+
+task 6:Finding 5 clusters using k-means clustering and viewing the details
+```{r}
+clusters=kmeans(filtered_data1, 5)
+clusters
+```
+
+task 7:Visulizing the cluster
+```{r}
+cluster_index = as.factor(clusters$cluster)
+ggplot(filtered_data1, aes(x=Annual_Income, y=Spending_Score, color= cluster_index )) +
+  geom_point()
+```
+
+task 8:Filtering the data in Fileter_data2
+```{r}
+filtered_data2= data[, c("Age","Annual_Income","Spending_Score")]
+```
+
+
+task 9:Finding 5 clusters
+```{r}
+cluster2= kmeans(filtered_data2, 5)
+cluster2
+```
+
+task 10:Ploting the cluster
+```{r}
+fviz_cluster(cluster2, data= filtered_data2, geom= c("point"))
+```
+
+```{r}
+cluster3= kmeans(filtered_data2, 5 , nstart=25)
+cluster3
+```
+
+
+```{r}
+fviz_cluster(cluster3, data= filtered_data2, geom= c("point"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
